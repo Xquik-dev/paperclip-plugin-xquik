@@ -1,0 +1,59 @@
+{
+  "name": "@xquik/paperclip-plugin-xquik",
+  "version": "0.1.0",
+  "description": "Paperclip plugin that gives agents Xquik X search, profile, tweet, and trend tools.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Xquik",
+  "homepage": "https://xquik.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xquik-dev/paperclip-plugin-xquik.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Xquik-dev/paperclip-plugin-xquik/issues"
+  },
+  "keywords": [
+    "paperclip",
+    "paperclip-plugin",
+    "xquik",
+    "x-twitter",
+    "twitter",
+    "mcp",
+    "agent-tools"
+  ],
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node ./esbuild.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ./vitest.config.ts",
+    "check": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js"
+  },
+  "dependencies": {
+    "@paperclipai/plugin-sdk": "2026.517.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.6.0",
+    "esbuild": "0.27.3",
+    "typescript": "5.7.3",
+    "vitest": "3.0.5"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
