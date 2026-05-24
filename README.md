@@ -22,6 +22,16 @@ Set these instance configuration fields in Paperclip:
 
 The plugin resolves the API key through Paperclip secrets at call time and sends it as the `x-api-key` header.
 
+## Install
+
+Npm publishing is pending. Use the pinned GitHub release artifact as the package source:
+
+```sh
+paperclipai plugin install https://github.com/Xquik-dev/paperclip-plugin-xquik/releases/download/v0.1.0/xquik-paperclip-plugin-xquik-0.1.0.tgz
+```
+
+For local development, install from an absolute checkout path after running `pnpm build`.
+
 ## Development
 
 ```sh
