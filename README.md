@@ -1,5 +1,8 @@
 # Xquik Paperclip Plugin
 
+> **Xquik is an independent third-party service.** Not affiliated with X Corp.
+> "Twitter" and "X" are trademarks of X Corp.
+
 Paperclip plugin that gives agents Xquik tools for X search, tweet lookup, user lookup, user timelines, and trends.
 
 ## Tools
