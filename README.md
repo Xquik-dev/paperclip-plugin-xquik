@@ -27,16 +27,16 @@ The plugin resolves the API key through Paperclip secrets at call time and sends
 
 ## Install
 
-Install the public npm package:
+Install the public npm package through Paperclip:
 
 ```sh
-npm install @xquik/paperclip-plugin-xquik
+paperclipai plugin install @xquik/paperclip-plugin-xquik
 ```
 
-Or use the pinned GitHub release artifact:
+To pin the current release:
 
 ```sh
-paperclipai plugin install https://github.com/Xquik-dev/paperclip-plugin-xquik/releases/download/v0.1.2/xquik-paperclip-plugin-xquik-0.1.2.tgz
+paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.2
 ```
 
 For local development, install from an absolute checkout path after running `pnpm build`.
