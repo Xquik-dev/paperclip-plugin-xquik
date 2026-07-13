@@ -13,7 +13,8 @@ const manifest: PaperclipPluginManifestV1 = {
   apiVersion: 1,
   version: PLUGIN_VERSION,
   displayName: "Xquik",
-  description: "Adds Xquik X search, tweet, user, timeline, and trend tools for Paperclip agents.",
+  description:
+    "Adds Xquik X search, tweet, user, timeline, and trend tools for Paperclip agents. Not affiliated with X Corp.",
   author: "Xquik",
   categories: ["connector", "automation"],
   capabilities: ["http.outbound", "secrets.read-ref", "agent.tools.register"],

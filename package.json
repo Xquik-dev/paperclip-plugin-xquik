@@ -1,6 +1,6 @@
 {
   "name": "@xquik/paperclip-plugin-xquik",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Paperclip plugin that gives agents Xquik X search, profile, tweet, and trend tools. Not affiliated with X Corp.",
   "type": "module",
   "license": "MIT",
@@ -42,18 +42,24 @@
     "worker": "./dist/worker.js"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "2026.517.0"
+    "@paperclipai/plugin-sdk": "2026.707.0"
   },
   "devDependencies": {
-    "@types/node": "24.6.0",
-    "esbuild": "0.27.3",
-    "typescript": "5.7.3",
-    "vitest": "3.0.5"
+    "@types/node": "26.1.1",
+    "esbuild": "0.28.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.4",
+    "vitest": "4.1.10"
   },
   "peerDependencies": {
     "react": ">=18"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

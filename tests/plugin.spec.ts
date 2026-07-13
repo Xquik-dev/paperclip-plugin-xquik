@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createTestHarness } from "@paperclipai/plugin-sdk/testing";
 import manifest from "../src/manifest.js";
@@ -22,12 +23,23 @@ describe("Xquik Paperclip plugin", () => {
   });
 
   it("declares host capabilities and agent tools", () => {
-    expect.assertions(4);
+    expect.assertions(5);
 
     expect(manifest.capabilities).toContain("http.outbound");
     expect(manifest.capabilities).toContain("secrets.read-ref");
     expect(manifest.capabilities).toContain("agent.tools.register");
+    expect(manifest.description).toContain("Not affiliated with X Corp.");
     expect(manifest.tools?.map((tool) => tool.name)).toEqual(Object.values(TOOL_NAMES));
+  });
+
+  it("keeps the manifest version aligned with package metadata", () => {
+    expect.assertions(1);
+
+    const packageMetadata = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { version: string };
+
+    expect(manifest.version).toBe(packageMetadata.version);
   });
 
   it("validates required configuration", async () => {

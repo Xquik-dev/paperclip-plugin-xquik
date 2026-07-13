@@ -30,7 +30,7 @@ The plugin resolves the API key through Paperclip secrets at call time and sends
 Npm publishing is pending. Use the pinned GitHub release artifact as the package source:
 
 ```sh
-paperclipai plugin install https://github.com/Xquik-dev/paperclip-plugin-xquik/releases/download/v0.1.0/xquik-paperclip-plugin-xquik-0.1.0.tgz
+paperclipai plugin install https://github.com/Xquik-dev/paperclip-plugin-xquik/releases/download/v0.1.1/xquik-paperclip-plugin-xquik-0.1.1.tgz
 ```
 
 For local development, install from an absolute checkout path after running `pnpm build`.
