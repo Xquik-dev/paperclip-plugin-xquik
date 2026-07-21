@@ -50,9 +50,6 @@
     "vite": "8.1.5",
     "vitest": "4.1.10"
   },
-  "peerDependencies": {
-    "react": ">=18"
-  },
   "publishConfig": {
     "access": "public",
     "provenance": true

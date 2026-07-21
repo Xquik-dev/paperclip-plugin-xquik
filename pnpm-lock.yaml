@@ -10,10 +10,7 @@ importers:
     dependencies:
       '@paperclipai/plugin-sdk':
         specifier: 2026.720.0
-        version: 2026.720.0(react@19.2.6)
-      react:
-        specifier: '>=18'
-        version: 19.2.6
+        version: 2026.720.0
     devDependencies:
       '@types/node':
         specifier: 26.1.1
@@ -635,10 +632,6 @@ packages:
     resolution: {integrity: sha512-lW616l85ucIQL+FocMmL7pQFPqBmwejrCMg+iPxyImlrANNJG9NHq/RkyCZopDhd8C3LA03PHRJDjkbGu8vvug==}
     engines: {node: ^10 || ^12 || >=14}
 
-  react@19.2.6:
-    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
-    engines: {node: '>=0.10.0'}
-
   rolldown@1.1.5:
     resolution: {integrity: sha512-t9z29cJjXf/vxQ8dyhCSpt6H6aSwHTk8cT5I3iy6SMXuFpk5mB6PL6XfC8PCwrPTx93udwKUm9HRteAlTGBLiA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -886,12 +879,10 @@ snapshots:
 
   '@oxc-project/types@0.139.0': {}
 
-  '@paperclipai/plugin-sdk@2026.720.0(react@19.2.6)':
+  '@paperclipai/plugin-sdk@2026.720.0':
     dependencies:
       '@paperclipai/shared': 2026.720.0
       zod: 3.25.76
-    optionalDependencies:
-      react: 19.2.6
 
   '@paperclipai/shared@2026.720.0':
     dependencies:
@@ -1195,8 +1186,6 @@ snapshots:
       nanoid: 3.3.16
       picocolors: 1.1.1
       source-map-js: 1.2.1
-
-  react@19.2.6: {}
 
   rolldown@1.1.5:
     dependencies:
