@@ -1,6 +1,6 @@
 {
   "name": "@xquik/paperclip-plugin-xquik",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Paperclip plugin that gives agents Xquik X search, profile, tweet, and trend tools. Not affiliated with X Corp.",
   "type": "module",
   "license": "MIT",
