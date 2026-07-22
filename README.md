@@ -3,6 +3,8 @@
 > **Xquik is an independent third-party service.** Not affiliated with X Corp.
 > "Twitter" and "X" are trademarks of X Corp.
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
+
 Paperclip plugin that gives agents Xquik tools for X search, tweet lookup, user lookup, user timelines, and trends.
 
 ## Tools
