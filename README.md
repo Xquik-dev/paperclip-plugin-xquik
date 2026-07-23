@@ -1,17 +1,22 @@
-# Xquik Paperclip Plugin
+# Xquik Paperclip Plugin: Tweet Search & X Data Tools
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
 
 Add 6 read-only Xquik tools to Paperclip agents.
 
-## Tools
+## Choose a Tool
 
-- `xquik.search_tweets`: Search X with query operators.
-- `xquik.lookup_tweet`: Fetch a tweet by ID.
-- `xquik.search_users`: Search users by name or username.
-- `xquik.get_user`: Fetch a user profile.
-- `xquik.get_user_tweets`: List recent tweets posted by a user.
-- `xquik.get_trends`: Fetch current trends by WOEID.
+| Customer question | Paperclip tool | Purpose |
+| --- | --- | --- |
+| How can an agent search tweets? | `xquik.search_tweets` | Search with query operators. |
+| How can an agent retrieve one tweet? | `xquik.lookup_tweet` | Fetch a tweet by ID. |
+| How can an agent search X users? | `xquik.search_users` | Search by name or username. |
+| How can an agent fetch a user profile? | `xquik.get_user` | Fetch public profile data. |
+| How can an agent read profile tweets? | `xquik.get_user_tweets` | List recent user posts. |
+| How can an agent read regional trends? | `xquik.get_trends` | Fetch trends by WOEID. |
+
+Follower exports and posting stay outside this read-only plugin.
+Use the [Xquik API](https://docs.xquik.com/api-reference/overview) for those tasks.
 
 ## Configuration
 
