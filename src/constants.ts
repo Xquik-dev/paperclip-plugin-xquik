@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Xquik Contributors
+// SPDX-License-Identifier: MIT
+
 const PLUGIN_ID = "xquik.paperclip-plugin-xquik";
 const PLUGIN_VERSION = "0.1.5";
 const DEFAULT_API_BASE_URL = "https://xquik.com/api/v1";
