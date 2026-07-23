@@ -33,7 +33,7 @@
   "scripts": {
     "build": "node ./esbuild.config.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --config ./vitest.config.ts",
+    "test": "vitest run --coverage --config ./vitest.config.ts",
     "check": "pnpm typecheck && pnpm test && pnpm build"
   },
   "paperclipPlugin": {
@@ -41,10 +41,11 @@
     "worker": "./dist/worker.js"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "2026.720.0"
+    "@paperclipai/plugin-sdk": "2026.722.0"
   },
   "devDependencies": {
     "@types/node": "26.1.1",
+    "@vitest/coverage-v8": "4.1.10",
     "esbuild": "0.28.1",
     "typescript": "7.0.2",
     "vite": "8.1.5",

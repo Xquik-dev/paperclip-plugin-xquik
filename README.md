@@ -52,6 +52,9 @@ pnpm install
 pnpm check
 ```
 
+`pnpm check` enforces type safety, 100% coverage, tests, and the build.
+CI also verifies REUSE 3.3 licensing and dependency audits.
+
 The build writes package files to `dist/`.
 
 ## API Contract
