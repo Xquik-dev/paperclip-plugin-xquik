@@ -52,10 +52,12 @@ For local development, build first. Then install from the absolute checkout path
 ```sh
 pnpm install
 pnpm check
+pnpm check:reproducible
 ```
 
 `pnpm check` enforces type safety, 100% coverage, tests, and the build.
-CI also verifies REUSE 3.3 licensing and dependency audits.
+The reproducibility check compares 2 clean builds and package archives.
+CI also verifies reproducibility, REUSE 3.3 licensing, and dependency audits.
 
 The build writes package files to `dist/`.
 

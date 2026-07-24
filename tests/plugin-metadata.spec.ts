@@ -38,6 +38,28 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(manifest.version).toBe(packageMetadata.version);
   });
 
+  it("keeps reproducibility verification in CI and releases", () => {
+    expect.assertions(3);
+
+    const packageMetadata = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { scripts: Record<string, string> };
+    const ciWorkflow = readFileSync(
+      new URL("../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    );
+    const publishWorkflow = readFileSync(
+      new URL("../.github/workflows/publish.yml", import.meta.url),
+      "utf8",
+    );
+
+    expect(packageMetadata.scripts["check:reproducible"]).toBe(
+      "node ./scripts/check-reproducible.mjs",
+    );
+    expect(ciWorkflow).toContain("run: pnpm check:reproducible");
+    expect(publishWorkflow).toContain("run: pnpm check:reproducible");
+  });
+
   it("validates configuration errors and warnings", async () => {
     expect.assertions(5);
 

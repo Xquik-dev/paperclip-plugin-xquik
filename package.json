@@ -32,6 +32,7 @@
   ],
   "scripts": {
     "build": "node ./esbuild.config.mjs",
+    "check:reproducible": "node ./scripts/check-reproducible.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage --config ./vitest.config.ts",
     "check": "pnpm typecheck && pnpm test && pnpm build"
