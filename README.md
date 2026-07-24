@@ -4,6 +4,8 @@
 
 Add 6 read-only Xquik tools to Paperclip agents.
 
+Use this plugin for narrow tools with secret-backed authentication.
+
 ## Choose a Tool
 
 | Customer question | Paperclip tool | Purpose |
@@ -61,5 +63,8 @@ The build writes package files to `dist/`.
 
 - [OpenAPI schema](https://xquik.com/openapi.json)
 - [API reference](https://docs.xquik.com/api-reference/overview)
+- [Organization support policy](https://github.com/Xquik-dev/.github/blob/main/SUPPORT.md)
+- [Organization security policy](https://github.com/Xquik-dev/.github/blob/main/SECURITY.md)
+- [Contribution guide](https://github.com/Xquik-dev/.github/blob/main/CONTRIBUTING.md)
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
