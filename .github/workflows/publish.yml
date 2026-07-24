@@ -58,6 +58,9 @@ jobs:
       - name: Check
         run: pnpm check
 
+      - name: Check Reproducible Package
+        run: pnpm check:reproducible
+
       - name: Audit
         run: pnpm audit --audit-level=low
 
