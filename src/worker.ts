@@ -130,6 +130,15 @@ function requireString(params: ToolParams, key: string): string | ToolResult {
   return { error: `${key} is required` };
 }
 
+function requirePathSegment(params: ToolParams, key: string): string | ToolResult {
+  const value = requireString(params, key);
+  if (typeof value !== "string") return value;
+  if (value === "." || value === "..") {
+    return { error: `${key} must not be a dot path segment` };
+  }
+  return value;
+}
+
 function result(content: string, data: unknown): ToolResult {
   return { content, data };
 }
@@ -196,7 +205,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     },
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
-      const id = requireString(payload, "id");
+      const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/tweets/${encodeURIComponent(id)}`, {});
       return result(`Fetched tweet ${id}.`, data);
@@ -243,7 +252,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     },
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
-      const id = requireString(payload, "id");
+      const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/users/${encodeURIComponent(id)}`, {});
       return result(`Fetched user ${id}.`, data);
@@ -268,7 +277,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     },
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
-      const id = requireString(payload, "id");
+      const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/users/${encodeURIComponent(id)}/tweets`, {
         cursor: asString(payload, "cursor"),
