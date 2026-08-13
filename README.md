@@ -42,7 +42,7 @@ paperclipai plugin install @xquik/paperclip-plugin-xquik
 To pin the current release:
 
 ```sh
-paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.5
+paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.6
 ```
 
 For local development, build first. Then install from the absolute checkout path.
