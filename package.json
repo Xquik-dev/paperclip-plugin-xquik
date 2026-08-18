@@ -42,16 +42,16 @@
     "worker": "./dist/worker.js"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "2026.722.0"
+    "@paperclipai/plugin-sdk": "2026.817.0"
   },
   "devDependencies": {
     "@types/node": "26.2.0",
-    "@vitest/coverage-v8": "4.1.10",
-    "esbuild": "0.28.1",
+    "@vitest/coverage-v8": "4.1.11",
+    "esbuild": "0.28.2",
     "fast-check": "4.9.0",
     "typescript": "7.0.2",
     "vite": "8.2.1",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "publishConfig": {
     "access": "public",
