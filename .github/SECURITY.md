@@ -1,21 +1,21 @@
-# Security Policy
+# Security policy
 
-## Supported Versions
+## Supported versions
 
 Security fixes target the latest published release.
 
-## Reporting A Vulnerability
+## Report a vulnerability
 
 Report vulnerabilities privately through
 [support@xquik.com](mailto:support@xquik.com).
 
-Do not open public issues for secrets, credential handling defects, private
-data exposure, or package supply-chain concerns.
+Do not publish secrets, credential defects, private data exposure, or package
+supply-chain concerns in an issue.
 
-We aim to acknowledge reports within 3 business days. We will coordinate a
-disclosure timeline after confirming the issue.
+Expect an acknowledgment within 3 business days. We will set a disclosure
+timeline after we confirm the issue.
 
 ## Scope
 
-Security-sensitive areas include API key handling, tool input validation,
-host permissions, dependencies, bundled output, and release metadata.
+Reports may cover API keys, tool inputs, host permissions, dependencies,
+bundled output, or release metadata.

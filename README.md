@@ -1,53 +1,48 @@
-# Xquik Paperclip Plugin: Tweet Search & X Data Tools
+# Twitter search & X API tools for Paperclip agents
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
 
-Add 6 read-only Xquik tools to Paperclip agents.
+Add 6 read-only Xquik tools to Paperclip agents. Search tweets, find profiles, read timelines, and track X API trends.
 
-Use this plugin for narrow tools with secret-backed authentication.
+## Pick a tool
 
-## Choose a Tool
-
-| Customer question | Paperclip tool | Purpose |
+| Agent task | Paperclip tool | Result |
 | --- | --- | --- |
-| How can an agent search tweets? | `xquik.search_tweets` | Search with query operators. |
-| How can an agent retrieve one tweet? | `xquik.lookup_tweet` | Fetch a tweet by ID. |
-| How can an agent search X users? | `xquik.search_users` | Search by name or username. |
-| How can an agent fetch a user profile? | `xquik.get_user` | Fetch public profile data. |
-| How can an agent read profile tweets? | `xquik.get_user_tweets` | List recent user posts. |
-| How can an agent read regional trends? | `xquik.get_trends` | Fetch trends by WOEID. |
+| Search tweets | `xquik.search_tweets` | Run a Twitter search with query operators. |
+| Read one tweet | `xquik.lookup_tweet` | Get a tweet by ID. |
+| Find X users | `xquik.search_users` | Search by name or username. |
+| Read a profile | `xquik.get_user` | Get public profile data. |
+| Read profile tweets | `xquik.get_user_tweets` | List recent posts from one user. |
+| Track regional trends | `xquik.get_trends` | Get trends by WOEID. |
 
-Follower exports and posting stay outside this read-only plugin.
-Use the [Xquik API](https://docs.xquik.com/api-reference/overview) for those tasks.
+This plugin does not export followers or publish posts. Use the [Xquik API](https://docs.xquik.com/api-reference/overview) for those tasks.
 
 ## Configuration
 
-Set these instance configuration fields in Paperclip:
+Configure these fields in Paperclip:
 
-- `apiBaseUrl`: Defaults to `https://xquik.com/api/v1`.
-- `apiKeySecretRef`: Holds the Paperclip secret reference for your API key.
-- `defaultSearchLimit`: Sets the tweet search limit from 1 to 200.
-- `defaultTrendCount`: Sets the trend count from 1 to 50.
+- `apiBaseUrl`: Xquik API endpoint. Defaults to `https://xquik.com/api/v1`.
+- `apiKeySecretRef`: Paperclip secret reference for the Xquik API key.
+- `defaultSearchLimit`: Default tweet search limit from 1 to 200.
+- `defaultTrendCount`: Default trend count from 1 to 50.
 
-The plugin resolves the API key through Paperclip secrets at call time and sends it as the `x-api-key` header.
+Paperclip resolves the API key at call time and sends the `x-api-key` header.
 
-## Install
+## Install the plugin
 
-Install the public npm package through Paperclip:
+Install the public npm package:
 
 ```sh
 paperclipai plugin install @xquik/paperclip-plugin-xquik
 ```
 
-To pin the current release:
+Pin the current release when you need reproducible installs:
 
 ```sh
 paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.6
 ```
 
-For local development, build first. Then install from the absolute checkout path.
-
-## Development
+## Develop locally
 
 ```sh
 pnpm install
@@ -55,13 +50,10 @@ pnpm check
 pnpm check:reproducible
 ```
 
-`pnpm check` enforces type safety, 100% coverage, tests, and the build.
-The reproducibility check compares 2 clean builds and package archives.
-CI also verifies reproducibility, REUSE 3.3 licensing, and dependency audits.
+`pnpm check` runs type checks, tests, 100% coverage, and the build. The reproducibility check compares 2 clean builds and package archives.
+CI also checks REUSE 3.3 licensing and dependencies. Builds write package files to `dist/`.
 
-The build writes package files to `dist/`.
-
-## API Contract
+## API contract
 
 - [OpenAPI schema](https://xquik.com/openapi.json)
 - [API reference](https://docs.xquik.com/api-reference/overview)

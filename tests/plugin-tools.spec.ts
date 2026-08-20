@@ -16,7 +16,7 @@ describe("Xquik Paperclip plugin tools", () => {
     vi.unstubAllGlobals();
   });
 
-  it("registers connection data and searches tweets", async () => {
+  it("registers connection details and searches tweets", async () => {
     expect.assertions(10);
 
     const requests = useResponses([
@@ -46,7 +46,7 @@ describe("Xquik Paperclip plugin tools", () => {
       tools: Object.values(TOOL_NAMES),
     });
     expect(output.error).toBeUndefined();
-    expect(output.content).toBe("Found 1 tweets. More results are available.");
+    expect(output.content).toBe("Found 1 tweet. More results are available.");
     expect(output.data).toEqual({
       tweets: [{ id: "123", text: "hello" }],
       has_next_page: true,
@@ -60,7 +60,7 @@ describe("Xquik Paperclip plugin tools", () => {
     expect(requestedHeaders.get("x-api-key")).toBe("resolved:XQUIK_API_KEY");
   });
 
-  it("executes every read-only tool and connection action", async () => {
+  it("runs all 6 read-only tools and the connection check", async () => {
     expect.assertions(9);
 
     const requests = useResponses([
@@ -115,7 +115,7 @@ describe("Xquik Paperclip plugin tools", () => {
       data: { tweets: [{ id: "1" }, { id: "2" }], next_cursor: "next" },
     });
     expect(clampedTrends).toEqual({
-      content: "Fetched 1 trends.",
+      content: "Fetched 1 trend.",
       data: { trends: ["Open Source"] },
     });
     expect(numericTrends).toEqual({

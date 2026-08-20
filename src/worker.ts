@@ -83,7 +83,7 @@ function errorMessage(body: unknown): string {
     if (typeof message === "string" && message.trim().length > 0) return message;
   }
   if (typeof body === "string" && body.trim().length > 0) return body.slice(0, 240);
-  return "Request failed";
+  return "Request failed. Check the request and retry.";
 }
 
 async function parseResponse(response: Response): Promise<unknown> {
@@ -103,7 +103,7 @@ async function xquikGet(
 ): Promise<unknown> {
   const config = await getConfig(ctx);
   if (!config.apiKeySecretRef) {
-    throw new Error("Xquik API key secret reference is not configured");
+    throw new Error("Xquik API key is not configured. Add apiKeySecretRef.");
   }
 
   const apiKey = await ctx.secrets.resolve(config.apiKeySecretRef);
@@ -127,14 +127,14 @@ async function xquikGet(
 function requireString(params: ToolParams, key: string): string | ToolResult {
   const value = asString(params, key);
   if (value !== undefined) return value;
-  return { error: `${key} is required` };
+  return { error: `${key} is required. Add ${key} and retry.` };
 }
 
 function requirePathSegment(params: ToolParams, key: string): string | ToolResult {
   const value = requireString(params, key);
   if (typeof value !== "string") return value;
   if (value === "." || value === "..") {
-    return { error: `${key} must not be a dot path segment` };
+    return { error: `${key} cannot be "." or "..". Enter a valid ID.` };
   }
   return value;
 }
@@ -142,6 +142,8 @@ function requirePathSegment(params: ToolParams, key: string): string | ToolResul
 function result(content: string, data: unknown): ToolResult {
   return { content, data };
 }
+
+function countLabel(count: number | undefined, noun: string): string { return `${count ?? 0} ${noun}${count === 1 ? "" : "s"}`; }
 
 function arrayCount(data: unknown, key: string): number | undefined {
   if (typeof data !== "object" || data === null) return undefined;
@@ -159,8 +161,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   ctx.tools.register(
     TOOL_NAMES.searchTweets,
     {
-      displayName: "Search X Tweets",
-      description: "Search X tweets with X query operators through Xquik.",
+      displayName: "Search tweets",
+      description: "Search tweets with Twitter search operators through Xquik.",
       parametersSchema: {
         type: "object",
         properties: {
@@ -188,15 +190,15 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         untilTime: asString(payload, "untilTime"),
       });
       const count = arrayCount(data, "tweets");
-      return result(`Found ${count ?? 0} tweets.${pageSuffix(data)}`, data);
+      return result(`Found ${countLabel(count, "tweet")}.${pageSuffix(data)}`, data);
     },
   );
 
   ctx.tools.register(
     TOOL_NAMES.lookupTweet,
     {
-      displayName: "Lookup X Tweet",
-      description: "Fetch a tweet by ID with full text, author, metrics, and media.",
+      displayName: "Get tweet",
+      description: "Get a tweet by ID with its text, author, metrics, and media.",
       parametersSchema: {
         type: "object",
         properties: { id: { type: "string" } },
@@ -215,8 +217,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   ctx.tools.register(
     TOOL_NAMES.searchUsers,
     {
-      displayName: "Search X Users",
-      description: "Search X users by name or username.",
+      displayName: "Search users",
+      description: "Search X profiles by name or username.",
       parametersSchema: {
         type: "object",
         properties: {
@@ -235,15 +237,15 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         cursor: asString(payload, "cursor"),
       });
       const count = arrayCount(data, "users");
-      return result(`Found ${count ?? 0} users.${pageSuffix(data)}`, data);
+      return result(`Found ${countLabel(count, "user")}.${pageSuffix(data)}`, data);
     },
   );
 
   ctx.tools.register(
     TOOL_NAMES.getUser,
     {
-      displayName: "Get X User",
-      description: "Fetch an X user profile by ID or username accepted by Xquik.",
+      displayName: "Get user profile",
+      description: "Get an X profile by user ID or username.",
       parametersSchema: {
         type: "object",
         properties: { id: { type: "string" } },
@@ -262,8 +264,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   ctx.tools.register(
     TOOL_NAMES.getUserTweets,
     {
-      displayName: "Get X User Tweets",
-      description: "List recent tweets posted by a user.",
+      displayName: "Get user tweets",
+      description: "List recent tweets from one X user.",
       parametersSchema: {
         type: "object",
         properties: {
@@ -285,15 +287,15 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         includeParentTweet: asBoolean(payload, "includeParentTweet"),
       });
       const count = arrayCount(data, "tweets");
-      return result(`Fetched ${count ?? 0} tweets for ${id}.${pageSuffix(data)}`, data);
+      return result(`Fetched ${countLabel(count, "tweet")} for ${id}.${pageSuffix(data)}`, data);
     },
   );
 
   ctx.tools.register(
     TOOL_NAMES.getTrends,
     {
-      displayName: "Get X Trends",
-      description: "Fetch current X trending topics by WOEID.",
+      displayName: "Get trends",
+      description: "Get current X trending topics by WOEID.",
       parametersSchema: {
         type: "object",
         properties: {
@@ -310,7 +312,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         count: asInteger(payload, "count", config.defaultTrendCount, 1, 50),
       });
       const count = arrayCount(data, "trends");
-      return result(`Fetched ${count ?? 0} trends.`, data);
+      return result(`Fetched ${countLabel(count, "trend")}.`, data);
     },
   );
 }
@@ -342,12 +344,12 @@ const plugin = definePlugin({
   async onHealth(): Promise<PluginHealthDiagnostics> {
     const ctx = currentContext;
     if (ctx === null) {
-      return { status: "degraded", message: "Plugin worker has not started" };
+      return { status: "degraded", message: "Plugin worker has not started. Start the plugin." };
     }
     const config = await getConfig(ctx);
     return {
       status: config.apiKeySecretRef ? "ok" : "degraded",
-      message: config.apiKeySecretRef ? "Xquik plugin ready" : "Configure an Xquik API key secret reference",
+      message: config.apiKeySecretRef ? "Xquik plugin is ready." : "Xquik API key is missing. Add apiKeySecretRef.",
       details: {
         apiBaseUrl: config.apiBaseUrl,
         tools: Object.values(TOOL_NAMES),
@@ -360,15 +362,15 @@ const plugin = definePlugin({
     const errors: string[] = [];
     const warnings: string[] = [];
     if (!resolved.apiKeySecretRef) {
-      errors.push("apiKeySecretRef is required");
+      errors.push("apiKeySecretRef is required. Add a Paperclip secret reference.");
     }
     try {
       new URL(resolved.apiBaseUrl);
     } catch {
-      errors.push("apiBaseUrl must be a valid URL");
+      errors.push("apiBaseUrl is invalid. Enter a complete URL.");
     }
     if (!resolved.apiBaseUrl.endsWith("/api/v1")) {
-      warnings.push("apiBaseUrl should usually end with /api/v1");
+      warnings.push("apiBaseUrl should end with /api/v1.");
     }
     return {
       ok: errors.length === 0,
