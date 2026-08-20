@@ -11,12 +11,12 @@ import {
   useResponses,
 } from "./test-helpers.js";
 
-describe("Xquik Paperclip plugin errors", () => {
+describe("Xquik Paperclip plugin error messages", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("returns tool errors for every missing required parameter", async () => {
+  it("explains how to add each missing required parameter", async () => {
     expect.assertions(1);
 
     const harness = createHarness();
@@ -31,15 +31,15 @@ describe("Xquik Paperclip plugin errors", () => {
     ]);
 
     expect(outputs).toEqual([
-      { error: "q is required" },
-      { error: "id is required" },
-      { error: "q is required" },
-      { error: "id is required" },
-      { error: "id is required" },
+      { error: "q is required. Add q and retry." },
+      { error: "id is required. Add id and retry." },
+      { error: "q is required. Add q and retry." },
+      { error: "id is required. Add id and retry." },
+      { error: "id is required. Add id and retry." },
     ]);
   });
 
-  it("handles empty, text, and unexpected collection responses", async () => {
+  it("summarizes empty, text, and malformed collection responses", async () => {
     expect.assertions(2);
 
     const requests = useResponses([
@@ -81,7 +81,7 @@ describe("Xquik Paperclip plugin errors", () => {
     ).toEqual(["20", "20", "1"]);
   });
 
-  it("rejects requests without an API key", async () => {
+  it("tells users how to configure a missing API key", async () => {
     expect.assertions(1);
 
     const harness = createHarness({});
@@ -89,10 +89,10 @@ describe("Xquik Paperclip plugin errors", () => {
 
     await expect(
       harness.executeTool(TOOL_NAMES.getTrends, {}),
-    ).rejects.toThrow("Xquik API key secret reference is not configured");
+    ).rejects.toThrow("Xquik API key is not configured. Add apiKeySecretRef.");
   });
 
-  it("reports structured, text, and fallback API errors", async () => {
+  it("preserves API details and supplies a useful fallback error", async () => {
     expect.assertions(6);
 
     const longError = "x".repeat(300);
@@ -114,16 +114,16 @@ describe("Xquik Paperclip plugin errors", () => {
       "Xquik request failed with status 429: blocked",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 500: Request failed",
+      "Xquik request failed with status 500: Request failed. Check the request and retry.",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 500: Request failed",
+      "Xquik request failed with status 500: Request failed. Check the request and retry.",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
       `Xquik request failed with status 502: ${longError.slice(0, 240)}`,
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 503: Request failed",
+      "Xquik request failed with status 503: Request failed. Check the request and retry.",
     );
   });
 });

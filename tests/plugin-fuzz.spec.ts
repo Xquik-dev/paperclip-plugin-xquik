@@ -13,7 +13,7 @@ describe("Xquik Paperclip plugin fuzz properties", () => {
     vi.unstubAllGlobals();
   });
 
-  it("keeps arbitrary tweet IDs inside one encoded path segment", async () => {
+  it("keeps every generated tweet ID inside one encoded path segment", async () => {
     expect.assertions(1);
     let requestCount = 0;
 
@@ -48,7 +48,7 @@ describe("Xquik Paperclip plugin fuzz properties", () => {
       const harness = createHarness();
       await plugin.definition.setup(harness.ctx);
       const output = await harness.executeTool(TOOL_NAMES.lookupTweet, { id });
-      assert.equal(output.error, "id must not be a dot path segment");
+      assert.equal(output.error, 'id cannot be "." or "..". Enter a valid ID.');
     }
 
     expect(requestCount).toBe(100);

@@ -81,7 +81,7 @@ try {
   assert.deepEqual(
     secondBuild.buildFiles,
     firstBuild.buildFiles,
-    "Repeated builds produced different files",
+    "Builds differ. Check nondeterministic output.",
   );
 
   const expectedBuildFiles = [
@@ -93,12 +93,12 @@ try {
   assert.deepEqual(
     firstBuild.buildFiles.map(([path]) => path),
     expectedBuildFiles,
-    "Build output contains unexpected files",
+    "Build output changed. Review the package file list.",
   );
 
   const firstFilename = basename(firstBuild.archive.filename);
   const secondFilename = basename(secondBuild.archive.filename);
-  assert.equal(secondFilename, firstFilename, "Package names differ");
+  assert.equal(secondFilename, firstFilename, "Package names differ. Check package metadata.");
 
   const expectedPackageFiles = [
     "LICENSE",
@@ -112,21 +112,21 @@ try {
   assert.deepEqual(
     firstBuild.archive.files.map(({ path }) => path).sort(),
     expectedPackageFiles,
-    "Package contents differ from the public contract",
+    "Package contents changed. Review the public file list.",
   );
   assert.deepEqual(
     secondBuild.archive.files.map(({ path }) => path).sort(),
     expectedPackageFiles,
-    "Repeated package contents differ from the public contract",
+    "Package contents differ between builds. Check nondeterministic files.",
   );
 
   assert.deepEqual(
     await readFile(join(secondDestination, secondFilename)),
     await readFile(join(firstDestination, firstFilename)),
-    "Repeated package archives differ",
+    "Package archives differ. Check timestamps and generated metadata.",
   );
 } finally {
   await rm(workspace, { force: true, recursive: true });
 }
 
-process.stdout.write("Build outputs and package archives are reproducible.\n");
+process.stdout.write("Verified reproducible build output and package archives.\n");

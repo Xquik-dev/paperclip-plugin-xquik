@@ -9,16 +9,16 @@ import { TOOL_NAMES } from "../src/constants.js";
 import { createHarness } from "./test-helpers.js";
 
 describe("Xquik Paperclip plugin metadata", () => {
-  it("reports degraded health before setup", async () => {
+  it("explains how to recover when the worker has not started", async () => {
     expect.assertions(1);
 
     await expect(plugin.definition.onHealth?.()).resolves.toEqual({
       status: "degraded",
-      message: "Plugin worker has not started",
+      message: "Plugin worker has not started. Start the plugin.",
     });
   });
 
-  it("declares host capabilities and agent tools", () => {
+  it("lists every host capability and agent tool", () => {
     expect.assertions(5);
 
     expect(manifest.capabilities).toContain("http.outbound");
@@ -28,7 +28,7 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(manifest.tools?.map((tool) => tool.name)).toEqual(Object.values(TOOL_NAMES));
   });
 
-  it("keeps the manifest version aligned with package metadata", () => {
+  it("matches the manifest version to the package version", () => {
     expect.assertions(1);
 
     const packageMetadata = JSON.parse(
@@ -38,7 +38,7 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(manifest.version).toBe(packageMetadata.version);
   });
 
-  it("keeps reproducibility verification in CI and releases", () => {
+  it("checks reproducibility in pull requests and releases", () => {
     expect.assertions(3);
 
     const packageMetadata = JSON.parse(
@@ -60,7 +60,7 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(publishWorkflow).toContain("run: pnpm check:reproducible");
   });
 
-  it("validates configuration errors and warnings", async () => {
+  it("returns actionable configuration errors and warnings", async () => {
     expect.assertions(5);
 
     const missing = await plugin.definition.onValidateConfig?.({});
@@ -83,24 +83,27 @@ describe("Xquik Paperclip plugin metadata", () => {
 
     expect(missing).toEqual({
       ok: false,
-      errors: ["apiKeySecretRef is required"],
+      errors: ["apiKeySecretRef is required. Add a Paperclip secret reference."],
       warnings: [],
     });
     expect(invalid).toEqual({
       ok: false,
-      errors: ["apiKeySecretRef is required", "apiBaseUrl must be a valid URL"],
-      warnings: ["apiBaseUrl should usually end with /api/v1"],
+      errors: [
+        "apiKeySecretRef is required. Add a Paperclip secret reference.",
+        "apiBaseUrl is invalid. Enter a complete URL.",
+      ],
+      warnings: ["apiBaseUrl should end with /api/v1."],
     });
     expect(proxy).toEqual({
       ok: true,
       errors: [],
-      warnings: ["apiBaseUrl should usually end with /api/v1"],
+      warnings: ["apiBaseUrl should end with /api/v1."],
     });
     expect(defaultUrl).toEqual({ ok: true, errors: [], warnings: [] });
     expect(emptyUrl).toEqual({ ok: true, errors: [], warnings: [] });
   });
 
-  it("reports configured and unconfigured health", async () => {
+  it("reports healthy and recoverable plugin states", async () => {
     expect.assertions(2);
 
     const harness = createHarness();
@@ -108,7 +111,7 @@ describe("Xquik Paperclip plugin metadata", () => {
 
     await expect(plugin.definition.onHealth?.()).resolves.toEqual({
       status: "ok",
-      message: "Xquik plugin ready",
+      message: "Xquik plugin is ready.",
       details: {
         apiBaseUrl: "https://xquik.com/api/v1",
         tools: Object.values(TOOL_NAMES),
@@ -123,7 +126,7 @@ describe("Xquik Paperclip plugin metadata", () => {
 
     await expect(plugin.definition.onHealth?.()).resolves.toEqual({
       status: "degraded",
-      message: "Configure an Xquik API key secret reference",
+      message: "Xquik API key is missing. Add apiKeySecretRef.",
       details: {
         apiBaseUrl: "https://xquik.com/api/v1",
         tools: Object.values(TOOL_NAMES),

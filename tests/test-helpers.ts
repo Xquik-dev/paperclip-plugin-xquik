@@ -40,7 +40,7 @@ function useResponses(responses: readonly Response[]): RecordedRequest[] {
     async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
       const response = remaining.shift();
       if (response === undefined) {
-        throw new Error("No test response remains");
+        throw new Error("Test response queue is empty. Add a stub response.");
       }
       requests.push({ init, url: String(input) });
       return response;
