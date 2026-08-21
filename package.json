@@ -1,7 +1,7 @@
 {
   "name": "@xquik/paperclip-plugin-xquik",
-  "version": "0.1.6",
-  "description": "Paperclip agent tools for Twitter search, tweet lookup, profiles, timelines, and X API trends. Not affiliated with X Corp.",
+  "version": "0.1.7",
+  "description": "Paperclip plugin for Twitter search, tweet lookup, profiles, timelines, and X API trends. Not affiliated with X Corp.",
   "type": "module",
   "license": "MIT",
   "author": "Xquik",

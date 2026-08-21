@@ -92,7 +92,7 @@ describe("Xquik Paperclip plugin error messages", () => {
     ).rejects.toThrow("Xquik API key is not configured. Add apiKeySecretRef.");
   });
 
-  it("preserves API details and supplies a useful fallback error", async () => {
+  it("preserves API errors and handles bodies without a message", async () => {
     expect.assertions(6);
 
     const longError = "x".repeat(300);

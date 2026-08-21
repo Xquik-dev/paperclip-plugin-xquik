@@ -17,7 +17,7 @@ const manifest: PaperclipPluginManifestV1 = {
   version: PLUGIN_VERSION,
   displayName: "Xquik",
   description:
-    "Search tweets, read profiles and timelines, and track X API trends from Paperclip. Not affiliated with X Corp.",
+    "Paperclip plugin for Twitter search, tweet lookup, profiles, timelines, and X API trends. Not affiliated with X Corp.",
   author: "Xquik",
   categories: ["connector", "automation"],
   capabilities: ["http.outbound", "secrets.read-ref", "agent.tools.register"],
@@ -64,7 +64,7 @@ const manifest: PaperclipPluginManifestV1 = {
         type: "object",
         properties: {
           q: { type: "string", description: "Twitter search query with supported operators." },
-          queryType: { type: "string", enum: ["Latest", "Top"], default: "Latest", description: "Result order." },
+          queryType: { type: "string", enum: ["Latest", "Top"], default: "Latest", description: "Sort by latest or top results." },
           limit: { type: "integer", minimum: 1, maximum: 200, description: "Maximum tweets to return." },
           cursor: { type: "string", description: "Cursor from the previous page." },
           sinceTime: { type: "string", description: "Earliest tweet time in ISO 8601 format." },
