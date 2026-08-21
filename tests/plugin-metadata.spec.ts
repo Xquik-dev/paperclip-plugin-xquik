@@ -60,7 +60,7 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(publishWorkflow).toContain("run: pnpm check:reproducible");
   });
 
-  it("returns actionable configuration errors and warnings", async () => {
+  it("reports invalid configuration with a fix", async () => {
     expect.assertions(5);
 
     const missing = await plugin.definition.onValidateConfig?.({});
@@ -103,7 +103,7 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(emptyUrl).toEqual({ ok: true, errors: [], warnings: [] });
   });
 
-  it("reports healthy and recoverable plugin states", async () => {
+  it("reports ready and missing-key states", async () => {
     expect.assertions(2);
 
     const harness = createHarness();

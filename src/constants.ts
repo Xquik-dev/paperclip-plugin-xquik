@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 const PLUGIN_ID = "xquik.paperclip-plugin-xquik";
-const PLUGIN_VERSION = "0.1.6";
+const PLUGIN_VERSION = "0.1.7";
 const DEFAULT_API_BASE_URL = "https://xquik.com/api/v1";
 const DEFAULT_SEARCH_LIMIT = 20;
 const DEFAULT_TREND_COUNT = 10;

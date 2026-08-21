@@ -2,9 +2,9 @@
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
 
-Add 6 read-only Xquik tools to Paperclip agents. Search tweets, find profiles, read timelines, and track X API trends.
+Add 6 read-only Xquik tools to Paperclip agents for Twitter search, tweet lookup, profiles, timelines, and regional trends.
 
-## Pick a tool
+## Tools
 
 | Agent task | Paperclip tool | Result |
 | --- | --- | --- |
@@ -13,13 +13,11 @@ Add 6 read-only Xquik tools to Paperclip agents. Search tweets, find profiles, r
 | Find X users | `xquik.search_users` | Search by name or username. |
 | Read a profile | `xquik.get_user` | Get public profile data. |
 | Read profile tweets | `xquik.get_user_tweets` | List recent posts from one user. |
-| Track regional trends | `xquik.get_trends` | Get trends by WOEID. |
+| Read regional trends | `xquik.get_trends` | Get trends by WOEID. |
 
 This plugin does not export followers or publish posts. Use the [Xquik API](https://docs.xquik.com/api-reference/overview) for those tasks.
 
 ## Configuration
-
-Configure these fields in Paperclip:
 
 - `apiBaseUrl`: Xquik API endpoint. Defaults to `https://xquik.com/api/v1`.
 - `apiKeySecretRef`: Paperclip secret reference for the Xquik API key.
@@ -28,9 +26,7 @@ Configure these fields in Paperclip:
 
 Paperclip resolves the API key at call time and sends the `x-api-key` header.
 
-## Install the plugin
-
-Install the public npm package:
+## Install
 
 ```sh
 paperclipai plugin install @xquik/paperclip-plugin-xquik
@@ -39,7 +35,7 @@ paperclipai plugin install @xquik/paperclip-plugin-xquik
 Pin the current release when you need reproducible installs:
 
 ```sh
-paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.6
+paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.1.7
 ```
 
 ## Develop locally
@@ -50,8 +46,8 @@ pnpm check
 pnpm check:reproducible
 ```
 
-`pnpm check` runs type checks, tests, 100% coverage, and the build. The reproducibility check compares 2 clean builds and package archives.
-CI also checks REUSE 3.3 licensing and dependencies. Builds write package files to `dist/`.
+`pnpm check` runs type checks, tests at 100% coverage, and the build.
+`pnpm check:reproducible` compares 2 clean builds and package archives. CI checks REUSE 3.3 metadata and dependencies.
 
 ## API contract
 
