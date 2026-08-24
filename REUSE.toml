@@ -8,7 +8,7 @@ path = [
   ".github/SECURITY.md",
   ".gitignore",
   "LICENSE",
-  "README.md",
+  "*.md",
   "package.json",
   "pnpm-lock.yaml",
   "tsconfig.json",

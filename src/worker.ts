@@ -71,11 +71,6 @@ async function getConfig(ctx: PluginContext): Promise<ResolvedConfig> {
   return normalizeConfig(await ctx.config.get());
 }
 
-function appendParam(url: URL, key: string, value: string | number | boolean | undefined): void {
-  if (value === undefined) return;
-  url.searchParams.set(key, String(value));
-}
-
 function errorMessage(body: unknown): string {
   if (typeof body === "object" && body !== null) {
     const record = body as Record<string, unknown>;
@@ -108,7 +103,9 @@ async function xquikGet(
 
   const apiKey = await ctx.secrets.resolve(config.apiKeySecretRef);
   const url = new URL(`${config.apiBaseUrl}${endpoint}`);
-  for (const [key, value] of Object.entries(params)) appendParam(url, key, value);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined) url.searchParams.set(key, String(value));
+  }
 
   const response = await ctx.http.fetch(url.toString(), {
     method: "GET",
@@ -137,10 +134,6 @@ function requirePathSegment(params: ToolParams, key: string): string | ToolResul
     return { error: `${key} cannot be "." or "..". Enter a valid ID.` };
   }
   return value;
-}
-
-function result(content: string, data: unknown): ToolResult {
-  return { content, data };
 }
 
 function countLabel(count: number | undefined, noun: string): string { return `${count ?? 0} ${noun}${count === 1 ? "" : "s"}`; }
@@ -190,7 +183,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         untilTime: asString(payload, "untilTime"),
       });
       const count = arrayCount(data, "tweets");
-      return result(`Found ${countLabel(count, "tweet")}.${pageSuffix(data)}`, data);
+      return { content: `Found ${countLabel(count, "tweet")}.${pageSuffix(data)}`, data };
     },
   );
 
@@ -210,7 +203,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
       const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/tweets/${encodeURIComponent(id)}`, {});
-      return result(`Fetched tweet ${id}.`, data);
+      return { content: `Fetched tweet ${id}.`, data };
     },
   );
 
@@ -237,7 +230,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         cursor: asString(payload, "cursor"),
       });
       const count = arrayCount(data, "users");
-      return result(`Found ${countLabel(count, "user")}.${pageSuffix(data)}`, data);
+      return { content: `Found ${countLabel(count, "user")}.${pageSuffix(data)}`, data };
     },
   );
 
@@ -257,7 +250,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
       const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/users/${encodeURIComponent(id)}`, {});
-      return result(`Fetched user ${id}.`, data);
+      return { content: `Fetched user ${id}.`, data };
     },
   );
 
@@ -287,7 +280,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         includeParentTweet: asBoolean(payload, "includeParentTweet"),
       });
       const count = arrayCount(data, "tweets");
-      return result(`Fetched ${countLabel(count, "tweet")} for ${id}.${pageSuffix(data)}`, data);
+      return { content: `Fetched ${countLabel(count, "tweet")} for ${id}.${pageSuffix(data)}`, data };
     },
   );
 
@@ -312,7 +305,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
         count: asInteger(payload, "count", config.defaultTrendCount, 1, 50),
       });
       const count = arrayCount(data, "trends");
-      return result(`Fetched ${countLabel(count, "trend")}.`, data);
+      return { content: `Fetched ${countLabel(count, "trend")}.`, data };
     },
   );
 }
