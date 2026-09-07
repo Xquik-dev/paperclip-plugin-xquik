@@ -42,7 +42,7 @@
     "worker": "./dist/worker.js"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "2026.817.0"
+    "@paperclipai/plugin-sdk": "2026.824.1"
   },
   "devDependencies": {
     "@types/node": "26.2.0",

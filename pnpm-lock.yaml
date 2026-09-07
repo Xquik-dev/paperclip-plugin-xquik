@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@paperclipai/plugin-sdk':
-        specifier: 2026.817.0
-        version: 2026.817.0
+        specifier: 2026.824.1
+        version: 2026.824.1
     devDependencies:
       '@types/node':
         specifier: 26.2.0
@@ -226,8 +226,8 @@ packages:
   '@oxc-project/types@0.144.0':
     resolution: {integrity: sha512-nuhZIOLuI6TFQ32I/WnUx+SCPY7SdSKwgnFHydAuoS1+Z4BRcaP+RRJmGzl9lw+0OFF7UmaESf7KQRXaNLHypg==}
 
-  '@paperclipai/plugin-sdk@2026.817.0':
-    resolution: {integrity: sha512-2rUxMmP019009OhSZuoYxM/TXIPrnyZt5aIhmh2/ZeJ/axMvjaWpBJvxxqlvCOJ7BWb0mxx9C5qBAcgD0cAlCw==}
+  '@paperclipai/plugin-sdk@2026.824.1':
+    resolution: {integrity: sha512-Zynbb60ocqPGWexSTSSJLBfJ9LAXJ/J8h65C56CZxCRnXFyYb0HaYbwq4JcqwkC0MmhgK0HFU6qrnCVGT5ghuw==}
     hasBin: true
     peerDependencies:
       react: '>=18'
@@ -235,8 +235,8 @@ packages:
       react:
         optional: true
 
-  '@paperclipai/shared@2026.817.0':
-    resolution: {integrity: sha512-PtZJjZe3l0THbbTi+gv7eCX4H04Ul4N0gPM9BdKiowCypTAMsa6E8uyvugegFEdWC6PdN51abSY5P4utxA2Lbw==}
+  '@paperclipai/shared@2026.824.1':
+    resolution: {integrity: sha512-PKgePWGXWhQYRoILtKG7S2QppFkBKmCpzVEySoo6BXO4aO1vmgYDi5f9x3wC7zzukugWkEqMOjBspTMCuYtvTQ==}
 
   '@rolldown/binding-android-arm64@1.2.4':
     resolution: {integrity: sha512-jHC2cnyKz5xU2fhECtFl8OZ83cYNt13GZQD+0uMJ/X3o+ijmd56okHhTUwxVSHPx1IRVIJEZ1/1pPzeLCU6XKA==}
@@ -935,12 +935,12 @@ snapshots:
 
   '@oxc-project/types@0.144.0': {}
 
-  '@paperclipai/plugin-sdk@2026.817.0':
+  '@paperclipai/plugin-sdk@2026.824.1':
     dependencies:
-      '@paperclipai/shared': 2026.817.0
+      '@paperclipai/shared': 2026.824.1
       zod: 3.25.76
 
-  '@paperclipai/shared@2026.817.0':
+  '@paperclipai/shared@2026.824.1':
     dependencies:
       zod: 3.25.76
 
