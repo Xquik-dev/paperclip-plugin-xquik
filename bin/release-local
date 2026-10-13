@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Xquik Contributors
+# SPDX-License-Identifier: MIT
+#
+# Publishes the version in package.json to npm from this machine,
+# then tags it and creates its GitHub release.
+# The npm token comes from the macOS Keychain and never touches the repository.
+# NPM_KEYCHAIN_SERVICE and NPM_KEYCHAIN_ACCOUNT name the Keychain item.
+
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+readonly registry_host="registry.npmjs.org"
+
+npmrc=""
+
+cleanup() {
+	if [[ -n "$npmrc" ]]; then
+		rm -f -- "$npmrc"
+	fi
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+
+step() {
+	printf '%s\n' "$1"
+}
+
+stop() {
+	printf 'Release stopped. %s\n' "$1" >&2
+	exit 1
+}
+
+step "Checking the Keychain item that holds the npm token."
+[[ -n "${NPM_KEYCHAIN_SERVICE:-}" ]] ||
+	stop "Set NPM_KEYCHAIN_SERVICE to the service of the Keychain item that holds the npm token."
+[[ -n "${NPM_KEYCHAIN_ACCOUNT:-}" ]] ||
+	stop "Set NPM_KEYCHAIN_ACCOUNT to the account of the Keychain item that holds the npm token."
+security find-generic-password -s "$NPM_KEYCHAIN_SERVICE" -a "$NPM_KEYCHAIN_ACCOUNT" >/dev/null 2>&1 ||
+	stop "The Keychain has no item for NPM_KEYCHAIN_SERVICE and NPM_KEYCHAIN_ACCOUNT. Add the npm token to it."
+
+step "Checking that the working tree is clean."
+[[ -z "$(git status --porcelain)" ]] || stop "Commit or remove local changes first."
+
+step "Checking that main is checked out."
+[[ "$(git symbolic-ref --quiet --short HEAD || true)" == "main" ]] || stop "Switch to main first."
+
+step "Fetching main from origin."
+git fetch --quiet origin main
+
+step "Checking that main matches origin/main."
+[[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] ||
+	stop "Pull or push until main matches origin/main."
+
+step "Reading the package name and version from package.json."
+name=$(node -p "require('./package.json').name")
+version=$(node -p "require('./package.json').version")
+tag="v$version"
+
+step "Checking that tag $tag is new."
+if git rev-parse --quiet --verify "refs/tags/$tag" >/dev/null; then
+	stop "Tag $tag exists locally. Bump the version in package.json or delete the local tag."
+fi
+remote_tag_status=0
+git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null || remote_tag_status=$?
+case $remote_tag_status in
+	0) stop "Tag $tag exists on origin. Bump the version in package.json first." ;;
+	2) ;;
+	*) stop "Could not read tags from origin. Check your network and GitHub access." ;;
+esac
+
+step "Checking GitHub CLI access."
+gh auth status --hostname github.com >/dev/null 2>&1 || stop "Run gh auth login first."
+
+step "Running bin/check-local."
+bin/check-local
+
+step "Building the package."
+pnpm build
+
+step "Checking whether $name@$version is on npm."
+versions_json=$(npm view "$name" versions --json) ||
+	stop "Could not read $name from npm. Check your network, then retry."
+if node -e '
+	const versions = [JSON.parse(process.argv[1])].flat();
+	process.exit(versions.includes(process.argv[2]) ? 0 : 1);
+' "$versions_json" "$version"; then
+	step "Skipping the upload because $name@$version is already on npm."
+else
+	step "Reading the npm token from the macOS Keychain."
+	token=$(security find-generic-password -s "$NPM_KEYCHAIN_SERVICE" -a "$NPM_KEYCHAIN_ACCOUNT" -w) ||
+		stop "Could not read the npm token. Unlock the Keychain, then retry."
+	npmrc=$(mktemp)
+	chmod 600 "$npmrc"
+	printf 'registry=https://%s/\n//%s/:_authToken=%s\n' "$registry_host" "$registry_host" "$token" >"$npmrc"
+	unset token
+
+	step "Publishing $name@$version to npm. Enter a one-time password if npm asks."
+	npm publish --userconfig "$npmrc"
+	cleanup
+	npmrc=""
+fi
+
+step "Creating and pushing the annotated tag $tag."
+git tag --annotate "$tag" --message "$name $version"
+git push origin "refs/tags/$tag"
+
+step "Creating the GitHub release $tag."
+gh release create "$tag" --verify-tag --title "$tag" --generate-notes
+
+step "Released $name@$version."

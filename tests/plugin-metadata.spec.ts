@@ -28,36 +28,41 @@ describe("Xquik Paperclip plugin metadata", () => {
     expect(manifest.tools?.map((tool) => tool.name)).toEqual(Object.values(TOOL_NAMES));
   });
 
-  it("matches the manifest version to the package version", () => {
-    expect.assertions(1);
+  it("states the same version and description in the manifest, the package and the README", () => {
+    expect.assertions(2);
 
-    const packageMetadata = JSON.parse(
+    const packageMetadata: unknown = JSON.parse(
       readFileSync(new URL("../package.json", import.meta.url), "utf8"),
-    ) as { version: string };
+    );
+    const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 
-    expect(manifest.version).toBe(packageMetadata.version);
+    expect(packageMetadata).toMatchObject({
+      version: manifest.version,
+      description: manifest.description,
+    });
+    expect(readme).toContain(
+      `paperclipai plugin install @xquik/paperclip-plugin-xquik --version ${manifest.version}\n`,
+    );
   });
 
-  it("checks reproducibility in pull requests and releases", () => {
+  it("declares the API's tweet search limit and trend regions", () => {
     expect.assertions(3);
 
-    const packageMetadata = JSON.parse(
-      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
-    ) as { scripts: Record<string, string> };
-    const ciWorkflow = readFileSync(
-      new URL("../.github/workflows/ci.yml", import.meta.url),
-      "utf8",
-    );
-    const publishWorkflow = readFileSync(
-      new URL("../.github/workflows/publish.yml", import.meta.url),
-      "utf8",
-    );
+    const schemas = new Map(manifest.tools?.map((tool) => [tool.name, tool.parametersSchema]));
 
-    expect(packageMetadata.scripts["check:reproducible"]).toBe(
-      "node ./scripts/check-reproducible.mjs",
-    );
-    expect(ciWorkflow).toContain("run: pnpm check:reproducible");
-    expect(publishWorkflow).toContain("run: pnpm check:reproducible");
+    expect(manifest.instanceConfigSchema).toMatchObject({
+      properties: { defaultSearchLimit: { minimum: 1, maximum: 10000 } },
+    });
+    expect(schemas.get(TOOL_NAMES.searchTweets)).toMatchObject({
+      properties: { limit: { minimum: 1, maximum: 10000 } },
+    });
+    expect(schemas.get(TOOL_NAMES.getTrends)).toMatchObject({
+      properties: {
+        woeid: { type: "integer" },
+        country: { type: "string" },
+        location: { type: "string" },
+      },
+    });
   });
 
   it("reports invalid configuration with a fix", async () => {

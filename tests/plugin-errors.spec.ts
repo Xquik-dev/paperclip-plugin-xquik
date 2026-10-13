@@ -108,22 +108,22 @@ describe("Xquik Paperclip plugin error messages", () => {
     await plugin.definition.setup(harness.ctx);
 
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 403: denied",
+      "Xquik request failed with status 403. denied",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 429: blocked",
+      "Xquik request failed with status 429. blocked",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 500: Request failed. Check the request and retry.",
+      "Xquik request failed with status 500. Request failed. Check the request and retry.",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 500: Request failed. Check the request and retry.",
+      "Xquik request failed with status 500. Request failed. Check the request and retry.",
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      `Xquik request failed with status 502: ${longError.slice(0, 240)}`,
+      `Xquik request failed with status 502. ${longError.slice(0, 240)}`,
     );
     await expect(harness.executeTool(TOOL_NAMES.getTrends, {})).rejects.toThrow(
-      "Xquik request failed with status 503: Request failed. Check the request and retry.",
+      "Xquik request failed with status 503. Request failed. Check the request and retry.",
     );
   });
 });
