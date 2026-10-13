@@ -6,10 +6,12 @@
 # then tags it and creates its GitHub release.
 # The npm token comes from the macOS Keychain and never touches the repository.
 # NPM_KEYCHAIN_SERVICE and NPM_KEYCHAIN_ACCOUNT name the Keychain item.
+# pnpm runs at the version that package.json pins, through corepack or bunx.
 
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
+source bin/pinned-pnpm.sh
 
 readonly registry_host="registry.npmjs.org"
 
@@ -39,6 +41,9 @@ step "Checking the Keychain item that holds the npm token."
 	stop "Set NPM_KEYCHAIN_ACCOUNT to the account of the Keychain item that holds the npm token."
 security find-generic-password -s "$NPM_KEYCHAIN_SERVICE" -a "$NPM_KEYCHAIN_ACCOUNT" >/dev/null 2>&1 ||
 	stop "The Keychain has no item for NPM_KEYCHAIN_SERVICE and NPM_KEYCHAIN_ACCOUNT. Add the npm token to it."
+
+step "Finding the pnpm version that package.json pins."
+resolve_pnpm stop
 
 step "Checking that the working tree is clean."
 [[ -z "$(git status --porcelain)" ]] || stop "Commit or remove local changes first."
@@ -77,7 +82,7 @@ step "Running bin/check-local."
 bin/check-local
 
 step "Building the package."
-pnpm build
+"${pnpm[@]}" build
 
 step "Checking whether $name@$version is on npm."
 versions_json=$(npm view "$name" versions --json) ||

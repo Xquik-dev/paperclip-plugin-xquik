@@ -58,19 +58,22 @@ paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.2.0
 ## Develop locally
 
 ```sh
-pnpm install
 bin/check-local --no-status
 ```
 
-`bin/check-local` runs every check a change must pass, in this order.
+`bin/check-local` needs Node.js, uv & either corepack or Bun.
+It needs no pnpm install. It runs the pnpm version that `package.json` pins.
+It runs that pnpm through corepack, or through `bunx` when corepack is missing.
+It stops when the pnpm it finds reports another version.
 
-1. `reuse lint` checks REUSE 3.3 metadata when `reuse` is installed.
-2. `pnpm --version` confirms that the pinned pnpm runs.
-3. `pnpm install --frozen-lockfile` installs the locked dependencies.
-4. `pnpm check` runs type checks, tests at 100% coverage & the build.
-5. `pnpm check:reproducible` compares 2 clean builds & package archives.
-6. `pnpm audit --audit-level=low` audits every dependency.
-7. `pnpm pack --dry-run` lists the package contents.
+It runs every check a change must pass, in this order.
+
+1. `reuse lint` checks REUSE 3.3 metadata. It runs at a pinned version through `uvx`.
+2. `pnpm install --frozen-lockfile` installs the locked dependencies.
+3. `pnpm check` runs type checks, tests at 100% coverage & the build.
+4. `pnpm check:reproducible` compares 2 clean builds & package archives.
+5. `pnpm audit --audit-level=low` audits every dependency.
+6. `pnpm pack --dry-run` lists the package contents.
 
 It stops at the first failure & names the check & the next step.
 It posts the result to GitHub as the `xquik-local-checks` commit status.
@@ -90,6 +93,7 @@ It refuses unless all of these hold.
 - Tag `v<version>` is new locally & on origin.
 
 Then it runs `bin/check-local`, builds & publishes with `npm publish`.
+It runs pnpm the same way as `bin/check-local`.
 It skips the upload when the version is already on npm.
 Last, it pushes the annotated tag & creates the GitHub release.
 

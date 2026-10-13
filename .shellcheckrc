@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Xquik Contributors
+# SPDX-License-Identifier: MIT
+
+# bin/check-local and bin/release-local source bin/pinned-pnpm.sh from the
+# repository root, so shellcheck follows that file from there.
+external-sources=true
+source-path=SCRIPTDIR/..
