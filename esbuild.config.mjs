@@ -7,7 +7,7 @@ const shared = {
   bundle: true,
   format: "esm",
   platform: "node",
-  target: "node20",
+  target: "node24.11",
   packages: "external",
   sourcemap: true,
 };

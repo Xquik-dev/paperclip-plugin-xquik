@@ -1,7 +1,7 @@
 {
   "name": "@xquik/paperclip-plugin-xquik",
-  "version": "0.1.7",
-  "description": "Paperclip plugin for Twitter search, tweet lookup, profiles, timelines, and X API trends. Not affiliated with X Corp.",
+  "version": "0.2.0",
+  "description": "Paperclip plugin for Twitter search, tweet lookup, profiles, timelines & X trends. Not affiliated with X Corp.",
   "type": "module",
   "license": "MIT",
   "author": "Xquik",
@@ -16,14 +16,17 @@
   "keywords": [
     "paperclip",
     "paperclip-plugin",
+    "paperclip-twitter",
+    "paperclip-ai-twitter",
+    "paperclip-x-plugin",
     "xquik",
     "twitter-search",
     "twitter-api",
     "agent-api"
   ],
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@12.11.2",
   "engines": {
-    "node": ">=20"
+    "node": ">=24.11"
   },
   "files": [
     "dist",
@@ -42,24 +45,18 @@
     "worker": "./dist/worker.js"
   },
   "dependencies": {
-    "@paperclipai/plugin-sdk": "2026.817.0"
+    "@paperclipai/plugin-sdk": "2026.1012.0"
   },
   "devDependencies": {
-    "@types/node": "26.2.0",
-    "@vitest/coverage-v8": "4.1.11",
+    "@types/node": "26.6.5",
+    "@vitest/coverage-v8": "5.0.4",
     "esbuild": "0.28.2",
-    "fast-check": "4.9.0",
+    "fast-check": "4.10.2",
     "typescript": "7.0.2",
-    "vite": "8.2.1",
-    "vitest": "4.1.11"
+    "vite": "8.3.4",
+    "vitest": "5.0.4"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
+    "access": "public"
   }
 }

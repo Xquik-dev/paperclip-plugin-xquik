@@ -60,6 +60,64 @@ describe("Xquik Paperclip plugin tools", () => {
     expect(requestedHeaders.get("x-api-key")).toBe("resolved:XQUIK_API_KEY");
   });
 
+  it.each([
+    { config: {}, params: { limit: 201 }, sent: "201" },
+    { config: {}, params: { limit: 10000 }, sent: "10000" },
+    { config: {}, params: { limit: 10001 }, sent: "10000" },
+    { config: { defaultSearchLimit: 500 }, params: {}, sent: "500" },
+    { config: { defaultSearchLimit: 20000 }, params: {}, sent: "10000" },
+  ])(
+    "searches up to 10,000 tweets with config $config and params $params",
+    async ({ config, params, sent }) => {
+      expect.assertions(1);
+
+      const requests = useResponses([jsonResponse({ tweets: [] })]);
+      const harness = createHarness({ ...defaultConfig, ...config });
+      await plugin.definition.setup(harness.ctx);
+
+      await harness.executeTool(TOOL_NAMES.searchTweets, { q: "xquik", ...params });
+
+      expect(new URL(requests[0]?.url ?? "").searchParams.get("limit")).toBe(sent);
+    },
+  );
+
+  it.each([
+    { region: "no region", params: {}, query: "?woeid=1&count=3" },
+    { region: "a blank country", params: { country: "   " }, query: "?woeid=1&count=3" },
+    { region: "a country WOEID", params: { woeid: 23424977 }, query: "?woeid=23424977&count=3" },
+    { region: "a country code", params: { country: " TR " }, query: "?country=TR&count=3" },
+    {
+      region: "a town and its country",
+      params: { woeid: null, location: "Istanbul", country: "Turkey" },
+      query: "?country=Turkey&location=Istanbul&count=3",
+    },
+    {
+      region: "a WOEID and a country",
+      params: { woeid: 23424969, country: "TR" },
+      query: "?woeid=23424969&country=TR&count=3",
+    },
+    {
+      region: "the worldwide WOEID and a country",
+      params: { woeid: 1, country: "TR" },
+      query: "?woeid=1&country=TR&count=3",
+    },
+    {
+      region: "an unusable WOEID and a town",
+      params: { woeid: 0, location: "Istanbul" },
+      query: "?location=Istanbul&count=3",
+    },
+  ])("reads trends for $region", async ({ params, query }) => {
+    expect.assertions(1);
+
+    const requests = useResponses([jsonResponse({ trends: [] })]);
+    const harness = createHarness();
+    await plugin.definition.setup(harness.ctx);
+
+    await harness.executeTool(TOOL_NAMES.getTrends, params);
+
+    expect(requests.map(({ url }) => url)).toEqual([`https://xquik.com/api/v1/x/trends${query}`]);
+  });
+
   it("runs all 6 read-only tools and the connection check", async () => {
     expect.assertions(9);
 

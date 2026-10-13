@@ -12,8 +12,11 @@ import {
   DEFAULT_API_BASE_URL,
   DEFAULT_SEARCH_LIMIT,
   DEFAULT_TREND_COUNT,
+  MAX_SEARCH_LIMIT,
+  MAX_TREND_COUNT,
   TOOL_NAMES,
 } from "./constants.js";
+import { TOOLS } from "./tools.js";
 
 interface XquikConfig {
   readonly apiBaseUrl?: string;
@@ -27,6 +30,12 @@ interface ResolvedConfig {
   readonly apiKeySecretRef: string;
   readonly defaultSearchLimit: number;
   readonly defaultTrendCount: number;
+}
+
+interface TrendRegion {
+  readonly woeid?: number;
+  readonly country?: string;
+  readonly location?: string;
 }
 
 type ToolParams = Record<string, unknown>;
@@ -62,8 +71,8 @@ function normalizeConfig(raw: Record<string, unknown>): ResolvedConfig {
   return {
     apiBaseUrl: normalizeBaseUrl(config.apiBaseUrl),
     apiKeySecretRef: typeof config.apiKeySecretRef === "string" ? config.apiKeySecretRef.trim() : "",
-    defaultSearchLimit: asInteger(raw, "defaultSearchLimit", DEFAULT_SEARCH_LIMIT, 1, 200),
-    defaultTrendCount: asInteger(raw, "defaultTrendCount", DEFAULT_TREND_COUNT, 1, 50),
+    defaultSearchLimit: asInteger(raw, "defaultSearchLimit", DEFAULT_SEARCH_LIMIT, 1, MAX_SEARCH_LIMIT),
+    defaultTrendCount: asInteger(raw, "defaultTrendCount", DEFAULT_TREND_COUNT, 1, MAX_TREND_COUNT),
   };
 }
 
@@ -116,7 +125,7 @@ async function xquikGet(
   });
   const body = await parseResponse(response);
   if (!response.ok) {
-    throw new Error(`Xquik request failed with status ${response.status}: ${errorMessage(body)}`);
+    throw new Error(`Xquik request failed with status ${response.status}. ${errorMessage(body)}`);
   }
   return body;
 }
@@ -136,6 +145,17 @@ function requirePathSegment(params: ToolParams, key: string): string | ToolResul
   return value;
 }
 
+// The API lets a WOEID win over country & location, so the worldwide WOEID, 1,
+// is the default only when the caller names no region. 0 marks no usable WOEID.
+function trendRegion(params: ToolParams): TrendRegion {
+  const country = asString(params, "country");
+  const location = asString(params, "location");
+  const woeid = asInteger(params, "woeid", 0, 0, Number.MAX_SAFE_INTEGER);
+  if (woeid > 0) return { woeid, country, location };
+  if (country === undefined && location === undefined) return { woeid: 1 };
+  return { country, location };
+}
+
 function countLabel(count: number | undefined, noun: string): string { return `${count ?? 0} ${noun}${count === 1 ? "" : "s"}`; }
 
 function arrayCount(data: unknown, key: string): number | undefined {
@@ -152,23 +172,8 @@ function pageSuffix(data: unknown): string {
 
 async function registerTools(ctx: PluginContext): Promise<void> {
   ctx.tools.register(
-    TOOL_NAMES.searchTweets,
-    {
-      displayName: "Search tweets",
-      description: "Search tweets with Twitter search operators through Xquik.",
-      parametersSchema: {
-        type: "object",
-        properties: {
-          q: { type: "string" },
-          queryType: { type: "string", enum: ["Latest", "Top"] },
-          limit: { type: "integer", minimum: 1, maximum: 200 },
-          cursor: { type: "string" },
-          sinceTime: { type: "string" },
-          untilTime: { type: "string" },
-        },
-        required: ["q"],
-      },
-    },
+    TOOLS.searchTweets.name,
+    TOOLS.searchTweets,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const q = requireString(payload, "q");
@@ -177,7 +182,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
       const data = await xquikGet(ctx, "/x/tweets/search", {
         q,
         queryType: asString(payload, "queryType") ?? "Latest",
-        limit: asInteger(payload, "limit", config.defaultSearchLimit, 1, 200),
+        limit: asInteger(payload, "limit", config.defaultSearchLimit, 1, MAX_SEARCH_LIMIT),
         cursor: asString(payload, "cursor"),
         sinceTime: asString(payload, "sinceTime"),
         untilTime: asString(payload, "untilTime"),
@@ -188,16 +193,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   );
 
   ctx.tools.register(
-    TOOL_NAMES.lookupTweet,
-    {
-      displayName: "Get tweet",
-      description: "Get a tweet by ID with its text, author, metrics, and media.",
-      parametersSchema: {
-        type: "object",
-        properties: { id: { type: "string" } },
-        required: ["id"],
-      },
-    },
+    TOOLS.lookupTweet.name,
+    TOOLS.lookupTweet,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const id = requirePathSegment(payload, "id");
@@ -208,19 +205,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   );
 
   ctx.tools.register(
-    TOOL_NAMES.searchUsers,
-    {
-      displayName: "Search users",
-      description: "Search X profiles by name or username.",
-      parametersSchema: {
-        type: "object",
-        properties: {
-          q: { type: "string" },
-          cursor: { type: "string" },
-        },
-        required: ["q"],
-      },
-    },
+    TOOLS.searchUsers.name,
+    TOOLS.searchUsers,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const q = requireString(payload, "q");
@@ -235,16 +221,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   );
 
   ctx.tools.register(
-    TOOL_NAMES.getUser,
-    {
-      displayName: "Get user profile",
-      description: "Get an X profile by user ID or username.",
-      parametersSchema: {
-        type: "object",
-        properties: { id: { type: "string" } },
-        required: ["id"],
-      },
-    },
+    TOOLS.getUser.name,
+    TOOLS.getUser,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const id = requirePathSegment(payload, "id");
@@ -255,21 +233,8 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   );
 
   ctx.tools.register(
-    TOOL_NAMES.getUserTweets,
-    {
-      displayName: "Get user tweets",
-      description: "List recent tweets from one X user.",
-      parametersSchema: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          cursor: { type: "string" },
-          includeReplies: { type: "boolean" },
-          includeParentTweet: { type: "boolean" },
-        },
-        required: ["id"],
-      },
-    },
+    TOOLS.getUserTweets.name,
+    TOOLS.getUserTweets,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const id = requirePathSegment(payload, "id");
@@ -285,24 +250,14 @@ async function registerTools(ctx: PluginContext): Promise<void> {
   );
 
   ctx.tools.register(
-    TOOL_NAMES.getTrends,
-    {
-      displayName: "Get trends",
-      description: "Get current X trending topics by WOEID.",
-      parametersSchema: {
-        type: "object",
-        properties: {
-          woeid: { type: "integer" },
-          count: { type: "integer", minimum: 1, maximum: 50 },
-        },
-      },
-    },
+    TOOLS.getTrends.name,
+    TOOLS.getTrends,
     async (params): Promise<ToolResult> => {
       const payload = params as ToolParams;
       const config = await getConfig(ctx);
       const data = await xquikGet(ctx, "/x/trends", {
-        woeid: asInteger(payload, "woeid", 1, 1, 999999),
-        count: asInteger(payload, "count", config.defaultTrendCount, 1, 50),
+        ...trendRegion(payload),
+        count: asInteger(payload, "count", config.defaultTrendCount, 1, MAX_TREND_COUNT),
       });
       const count = arrayCount(data, "trends");
       return { content: `Fetched ${countLabel(count, "trend")}.`, data };
