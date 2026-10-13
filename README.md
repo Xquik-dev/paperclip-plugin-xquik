@@ -1,4 +1,4 @@
-# Paperclip plugin for Twitter search & X data
+# Paperclip AI plugin for Twitter search & X data
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
 
@@ -7,7 +7,7 @@ Xquik charges only for delivered, unique, filter-matching results & never pads r
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
 
-This plugin adds 6 read-only Xquik tools to Paperclip agents.
+This plugin adds 6 read-only Xquik tools to Paperclip AI agents.
 They cover Twitter search, tweet lookup, profiles, timelines & regional trends.
 
 ## Tools
