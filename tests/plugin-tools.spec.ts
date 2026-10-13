@@ -97,6 +97,11 @@ describe("Xquik Paperclip plugin tools", () => {
       query: "?woeid=23424969&country=TR&count=3",
     },
     {
+      region: "the worldwide WOEID and a country",
+      params: { woeid: 1, country: "TR" },
+      query: "?woeid=1&country=TR&count=3",
+    },
+    {
       region: "an unusable WOEID and a town",
       params: { woeid: 0, location: "Istanbul" },
       query: "?location=Istanbul&count=3",
