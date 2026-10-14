@@ -4,8 +4,6 @@
 import type { PluginToolDeclaration } from "@paperclipai/plugin-sdk";
 import { MAX_SEARCH_LIMIT, MAX_TREND_COUNT, TOOL_NAMES } from "./constants.js";
 
-// The manifest lists these declarations, and the worker registers each handler
-// with the same object, so the 2 cannot differ.
 const TOOLS = {
   searchTweets: {
     name: TOOL_NAMES.searchTweets,

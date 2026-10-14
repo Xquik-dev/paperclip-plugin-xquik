@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik Contributors
 # SPDX-License-Identifier: MIT
-#
-# Publishes the version in package.json to npm from this machine,
-# then tags it and creates its GitHub release.
-# The npm token comes from the macOS Keychain and never touches the repository.
-# NPM_KEYCHAIN_SERVICE and NPM_KEYCHAIN_ACCOUNT name the Keychain item.
-# pnpm runs at the version that package.json pins, through corepack or bunx.
 
 set -euo pipefail
 

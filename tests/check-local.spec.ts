@@ -15,9 +15,6 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-// The script finds only these fakes on PATH, plus the real dirname.
-// A fake records its call and fails when FAKE_FAILS equals that call.
-// It also answers what the script reads, such as the pinned pnpm version.
 const fakeCommand = `#!/bin/sh
 call="\${0##*/} $*"
 printf '%s\\n' "$call" >> "$FAKE_CALLS"

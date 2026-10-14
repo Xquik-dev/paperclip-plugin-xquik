@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-FileCopyrightText: 2026 Xquik Contributors
 # SPDX-License-Identifier: MIT
-#
-# Runs every check a change must pass before it lands or ships.
-# Stops at the first failure and says what to do next.
-# REUSE runs at a pinned version through uv. pnpm runs at the version that
-# package.json pins, through corepack or bunx.
-# Reports the result as the xquik-local-checks commit status on GitHub
-# when the tree is clean and the commit is pushed. Pass --no-status to skip it.
 
 set -euo pipefail
 
@@ -44,7 +37,6 @@ if [[ $post_status == true ]]; then
 	fi
 fi
 
-# send_status <state> <description>
 send_status() {
 	local description=${2:0:139}
 	if [[ $post_status == true ]] &&
@@ -74,13 +66,11 @@ trap 'exit 130' INT TERM
 
 send_status pending "Running local checks."
 
-# fail_check <next step>
 fail_check() {
 	printf 'The %s check failed. %s\n' "$current_check" "$1" >&2
 	exit 1
 }
 
-# run_check <name> <next step> <command...>
 run_check() {
 	current_check=$1
 	local next_step=$2
