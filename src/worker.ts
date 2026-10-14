@@ -145,8 +145,6 @@ function requirePathSegment(params: ToolParams, key: string): string | ToolResul
   return value;
 }
 
-// The API lets a WOEID win over country & location, so the worldwide WOEID, 1,
-// is the default only when the caller names no region. 0 marks no usable WOEID.
 function trendRegion(params: ToolParams): TrendRegion {
   const country = asString(params, "country");
   const location = asString(params, "location");

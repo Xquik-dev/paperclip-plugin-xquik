@@ -1,17 +1,7 @@
 # shellcheck shell=bash
 # SPDX-FileCopyrightText: 2026 Xquik Contributors
 # SPDX-License-Identifier: MIT
-#
-# Sourced by bin/check-local and bin/release-local from the repository root.
-# resolve_pnpm finds a way to run the pnpm version that package.json pins,
-# so neither script depends on a pnpm installed on this machine.
-# It uses corepack, or bunx when corepack is missing. bunx runs @pnpm/exe,
-# the standalone build of pnpm, because bunx cannot start the pnpm package
-# on macOS.
 
-# resolve_pnpm <fail command>
-# Sets the pnpm array, or calls the fail command with 1 line that says why.
-# The fail command must exit.
 resolve_pnpm() {
 	local fail=$1
 	local pinned reported
