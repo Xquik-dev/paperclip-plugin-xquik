@@ -16,8 +16,7 @@
     ],
     "outDir": "dist",
     "rootDir": ".",
-    "allowJs": true,
-    "checkJs": true
+    "erasableSyntaxOnly": true
   },
   "include": [
     "**/*"

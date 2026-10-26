@@ -118,6 +118,18 @@ describe("Xquik Paperclip plugin tools", () => {
     expect(requests.map(({ url }) => url)).toEqual([`https://xquik.com/api/v1/x/trends${query}`]);
   });
 
+  it("reads worldwide trends when the params are not an object", async () => {
+    expect.assertions(1);
+
+    const requests = useResponses([jsonResponse({ trends: [] })]);
+    const harness = createHarness();
+    await plugin.definition.setup(harness.ctx);
+
+    await harness.executeTool(TOOL_NAMES.getTrends, null);
+
+    expect(requests.map(({ url }) => url)).toEqual(["https://xquik.com/api/v1/x/trends?woeid=1&count=3"]);
+  });
+
   it("runs all 6 read-only tools and the connection check", async () => {
     expect.assertions(9);
 

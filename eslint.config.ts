@@ -7,7 +7,13 @@ import tseslint from "typescript-eslint";
 export default defineConfig(
   { ignores: ["dist/**", "coverage/**"] },
   {
-    files: ["**/*.{ts,mts,cts,js,mjs,cjs}"],
+    files: ["**/*.{js,jsx,mjs,cjs}"],
+    rules: {
+      "no-restricted-syntax": ["error", { selector: "Program", message: "Write this file in TypeScript." }],
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx,mts,cts}"],
     languageOptions: { parser: tseslint.parser },
     linterOptions: { noInlineConfig: true, reportUnusedDisableDirectives: "error" },
     plugins: { "@typescript-eslint": tseslint.plugin },

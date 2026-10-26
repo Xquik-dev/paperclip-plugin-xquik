@@ -98,8 +98,7 @@ async function parseResponse(response: Response): Promise<unknown> {
   const text = await response.text();
   if (text.trim().length === 0) return null;
   try {
-    const parsed: unknown = JSON.parse(text);
-    return parsed;
+    return JSON.parse(text);
   } catch {
     return text;
   }
