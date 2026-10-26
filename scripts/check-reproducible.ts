@@ -10,9 +10,9 @@ import { basename, join, relative } from "node:path";
 
 const sourceDateEpoch = "946684800";
 
-function runPnpm(args, captureOutput = false) {
+function runPnpm(args: readonly string[], captureOutput = false): string {
   const result = spawnSync("pnpm", args, {
-    encoding: captureOutput ? "utf8" : undefined,
+    encoding: "utf8",
     env: {
       ...process.env,
       SOURCE_DATE_EPOCH: sourceDateEpoch,
@@ -30,8 +30,10 @@ function runPnpm(args, captureOutput = false) {
   return captureOutput ? result.stdout : "";
 }
 
-async function hashFiles(root, current = root) {
-  const hashes = [];
+type FileHash = readonly [path: string, digest: string];
+
+async function hashFiles(root: string, current = root): Promise<FileHash[]> {
+  const hashes: FileHash[] = [];
   const entries = await readdir(current, { withFileTypes: true });
   entries.sort((left, right) => left.name.localeCompare(right.name));
 
@@ -50,15 +52,31 @@ async function hashFiles(root, current = root) {
   return hashes;
 }
 
-function pack(destination) {
+type PackedArchive = { readonly filename: string; readonly files: readonly { readonly path: string }[] };
+
+const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const isList = (value: unknown): value is readonly unknown[] => Array.isArray(value);
+
+function packedFile(value: unknown): { readonly path: string } {
+  if (isRecord(value) && typeof value.path === "string") return { path: value.path };
+  throw new Error("pnpm pack listed a file without a path.");
+}
+
+function pack(destination: string): PackedArchive {
   const output = runPnpm(
     ["pack", "--json", "--pack-destination", destination],
     true,
   );
-  return JSON.parse(output);
+  const archive: unknown = JSON.parse(output);
+  if (!isRecord(archive) || typeof archive.filename !== "string" || !isList(archive.files)) {
+    throw new Error("pnpm pack --json printed no filename and file list.");
+  }
+  return { filename: archive.filename, files: archive.files.map(packedFile) };
 }
 
-async function buildAndPack(destination) {
+async function buildAndPack(destination: string): Promise<{ archive: PackedArchive; buildFiles: FileHash[] }> {
   await rm("dist", { force: true, recursive: true });
   runPnpm(["build"]);
 

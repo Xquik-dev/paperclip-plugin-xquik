@@ -18,13 +18,6 @@ import {
 } from "./constants.js";
 import { TOOLS } from "./tools.js";
 
-interface XquikConfig {
-  readonly apiBaseUrl?: string;
-  readonly apiKeySecretRef?: string;
-  readonly defaultSearchLimit?: number;
-  readonly defaultTrendCount?: number;
-}
-
 interface ResolvedConfig {
   readonly apiBaseUrl: string;
   readonly apiKeySecretRef: string;
@@ -38,7 +31,19 @@ interface TrendRegion {
   readonly location?: string;
 }
 
-type ToolParams = Record<string, unknown>;
+type ToolParams = Readonly<Record<string, unknown>>;
+
+function isRecord(value: unknown): value is ToolParams {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isList(value: unknown): value is readonly unknown[] {
+  return Array.isArray(value);
+}
+
+function toParams(params: unknown): ToolParams {
+  return isRecord(params) ? params : {};
+}
 
 let currentContext: PluginContext | null = null;
 
@@ -67,10 +72,10 @@ function normalizeBaseUrl(value: unknown): string {
 }
 
 function normalizeConfig(raw: Record<string, unknown>): ResolvedConfig {
-  const config = raw as XquikConfig;
+  const { apiBaseUrl, apiKeySecretRef } = raw;
   return {
-    apiBaseUrl: normalizeBaseUrl(config.apiBaseUrl),
-    apiKeySecretRef: typeof config.apiKeySecretRef === "string" ? config.apiKeySecretRef.trim() : "",
+    apiBaseUrl: normalizeBaseUrl(apiBaseUrl),
+    apiKeySecretRef: typeof apiKeySecretRef === "string" ? apiKeySecretRef.trim() : "",
     defaultSearchLimit: asInteger(raw, "defaultSearchLimit", DEFAULT_SEARCH_LIMIT, 1, MAX_SEARCH_LIMIT),
     defaultTrendCount: asInteger(raw, "defaultTrendCount", DEFAULT_TREND_COUNT, 1, MAX_TREND_COUNT),
   };
@@ -81,9 +86,8 @@ async function getConfig(ctx: PluginContext): Promise<ResolvedConfig> {
 }
 
 function errorMessage(body: unknown): string {
-  if (typeof body === "object" && body !== null) {
-    const record = body as Record<string, unknown>;
-    const message = record.message ?? record.error;
+  if (isRecord(body)) {
+    const message = body.message ?? body.error;
     if (typeof message === "string" && message.trim().length > 0) return message;
   }
   if (typeof body === "string" && body.trim().length > 0) return body.slice(0, 240);
@@ -94,7 +98,7 @@ async function parseResponse(response: Response): Promise<unknown> {
   const text = await response.text();
   if (text.trim().length === 0) return null;
   try {
-    return JSON.parse(text) as unknown;
+    return JSON.parse(text);
   } catch {
     return text;
   }
@@ -157,15 +161,14 @@ function trendRegion(params: ToolParams): TrendRegion {
 function countLabel(count: number | undefined, noun: string): string { return `${count ?? 0} ${noun}${count === 1 ? "" : "s"}`; }
 
 function arrayCount(data: unknown, key: string): number | undefined {
-  if (typeof data !== "object" || data === null) return undefined;
-  const value = (data as Record<string, unknown>)[key];
-  return Array.isArray(value) ? value.length : undefined;
+  if (!isRecord(data)) return undefined;
+  const value = data[key];
+  return isList(value) ? value.length : undefined;
 }
 
 function pageSuffix(data: unknown): string {
-  if (typeof data !== "object" || data === null) return "";
-  const record = data as Record<string, unknown>;
-  return record.has_next_page === true || typeof record.next_cursor === "string" ? " More results are available." : "";
+  if (!isRecord(data)) return "";
+  return data.has_next_page === true || typeof data.next_cursor === "string" ? " More results are available." : "";
 }
 
 async function registerTools(ctx: PluginContext): Promise<void> {
@@ -173,7 +176,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.searchTweets.name,
     TOOLS.searchTweets,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const q = requireString(payload, "q");
       if (typeof q !== "string") return q;
       const config = await getConfig(ctx);
@@ -194,7 +197,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.lookupTweet.name,
     TOOLS.lookupTweet,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/tweets/${encodeURIComponent(id)}`, {});
@@ -206,7 +209,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.searchUsers.name,
     TOOLS.searchUsers,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const q = requireString(payload, "q");
       if (typeof q !== "string") return q;
       const data = await xquikGet(ctx, "/x/users/search", {
@@ -222,7 +225,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.getUser.name,
     TOOLS.getUser,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/users/${encodeURIComponent(id)}`, {});
@@ -234,7 +237,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.getUserTweets.name,
     TOOLS.getUserTweets,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const id = requirePathSegment(payload, "id");
       if (typeof id !== "string") return id;
       const data = await xquikGet(ctx, `/x/users/${encodeURIComponent(id)}/tweets`, {
@@ -251,7 +254,7 @@ async function registerTools(ctx: PluginContext): Promise<void> {
     TOOLS.getTrends.name,
     TOOLS.getTrends,
     async (params): Promise<ToolResult> => {
-      const payload = params as ToolParams;
+      const payload = toParams(params);
       const config = await getConfig(ctx);
       const data = await xquikGet(ctx, "/x/trends", {
         ...trendRegion(payload),
