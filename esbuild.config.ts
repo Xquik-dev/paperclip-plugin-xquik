@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Xquik Contributors
 // SPDX-License-Identifier: MIT
 
-import esbuild from "esbuild";
+import esbuild, { type BuildOptions } from "esbuild";
 
-const shared = {
+const shared: BuildOptions = {
   bundle: true,
   format: "esm",
   platform: "node",
