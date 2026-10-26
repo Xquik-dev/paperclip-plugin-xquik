@@ -37,7 +37,7 @@
     "build": "node ./esbuild.config.ts",
     "check:reproducible": "node ./scripts/check-reproducible.ts",
     "typecheck": "tsc --noEmit && type-coverage -p tsconfig.json --strict --at-least 100",
-    "lint": "eslint --flag unstable_native_nodejs_ts_config --max-warnings 0 .",
+    "lint": "eslint --config eslint.config.ts --flag unstable_native_nodejs_ts_config --max-warnings 0 .",
     "test": "vitest run --coverage --config ./vitest.config.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
   },
