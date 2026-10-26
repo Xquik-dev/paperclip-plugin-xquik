@@ -17,8 +17,7 @@
     "outDir": "dist",
     "rootDir": ".",
     "erasableSyntaxOnly": true,
-    "noUncheckedIndexedAccess": true,
-    "moduleDetection": "force"
+    "noUncheckedIndexedAccess": true
   },
   "include": [
     "**/*"

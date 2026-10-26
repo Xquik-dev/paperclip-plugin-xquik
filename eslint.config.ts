@@ -42,16 +42,17 @@ export default defineConfig(
         { selector: "[definite=true]", message: "Initialize the value instead of asserting that it is set." },
         { selector: "[declare=true]", message: "Give this value a checked source instead of declaring its type." },
         {
-          selector: "MemberExpression[object.name=/^(JSON|Reflect)$/]:not(CallExpression > .callee)",
-          message: "Call this function and type its result as unknown instead of passing it as a value.",
-        },
-        {
-          selector: "MemberExpression[object.property.name=/^(JSON|Reflect)$/]",
+          selector:
+            ":matches(Identifier[name=/^(JSON|Reflect)$/], Literal[value=/^(JSON|Reflect)$/]):not(CallExpression > MemberExpression.callee > .object)",
           message: "Call JSON and Reflect functions directly and type their results as unknown.",
         },
         {
-          selector: "VariableDeclarator[init.name=/^(JSON|Reflect)$/]",
-          message: "Call JSON and Reflect functions directly and type their results as unknown.",
+          selector: "Identifier[name=/^(eval|createRequire)$/]",
+          message: "Import the module or parse the value instead of evaluating code.",
+        },
+        {
+          selector: "MemberExpression[object.name='Object'][property.name='create']:not(CallExpression > .callee)",
+          message: "Call Object.create directly and type its result as unknown.",
         },
         {
           selector: "Identifier[name='require']:not(CallExpression > .callee)",
@@ -59,6 +60,12 @@ export default defineConfig(
         },
       ],
       "no-warning-comments": ["error", { terms: ["type-coverage:ignore"], location: "anywhere" }],
+    },
+  },
+  {
+    files: ["**/*.d.ts", "**/*.d.mts", "**/*.d.cts"],
+    rules: {
+      "no-restricted-syntax": ["error", { selector: "Program", message: "Write the value in TypeScript instead of declaring its type." }],
     },
   },
 );
