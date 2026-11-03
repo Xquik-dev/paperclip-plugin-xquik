@@ -1,6 +1,7 @@
 # Paperclip AI plugin for Twitter search & X data
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
+[![Convex Component](https://www.convex.dev/components/badge/convex-xquik)](https://www.convex.dev/components/convex-xquik)
 
 [Xquik](https://xquik.com) is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
 Xquik charges only for delivered, unique, filter-matching results & never pads rows.
