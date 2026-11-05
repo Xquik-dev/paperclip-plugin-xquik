@@ -4,7 +4,13 @@
 
 set -euo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+runner="$(git -C "$root" config --get checklocal.runner || true)"
+if [[ -n "$runner" && "${CHECK_LOCAL_HERE:-}" != 1 ]]; then
+	exec "$runner" "$root" "$@"
+fi
+
+cd "$root"
 source bin/pinned-pnpm.sh
 
 readonly status_repo="Xquik-dev/paperclip-plugin-xquik"
