@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: If you use Xquik Paperclip Twitter plugin, cite it using this metadata.
+title: Xquik Paperclip Twitter plugin
+type: software
+abstract: >-
+  Paperclip Twitter plugin for Xquik. Give Paperclip AI agents tweet search,
+  tweet lookup, profiles, timelines & trends for Twitter bot & Twitter
+  automation work.
+authors:
+  - name: Xquik
+    website: https://xquik.com
+url: https://github.com/Xquik-dev/paperclip-plugin-xquik
+repository-code: https://github.com/Xquik-dev/paperclip-plugin-xquik
+license: MIT
+keywords:
+  - Xquik
+  - Paperclip Twitter
+  - Paperclip plugin
+  - Twitter bot
+  - Twitter automation
+  - X API
+  - AI agents
