@@ -3,13 +3,42 @@
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13727/badge)](https://www.bestpractices.dev/projects/13727)
 [![Convex Component](https://www.convex.dev/components/badge/convex-xquik)](https://www.convex.dev/components/convex-xquik)
 
+This Paperclip Twitter plugin adds 6 read-only Xquik tools to Paperclip AI agents.
+They cover Twitter search, tweet lookup, profiles, timelines & regional trends.
+
 [Xquik](https://xquik.com) is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
 Xquik charges only for delivered, unique, filter-matching results & never pads rows.
 
 Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
 
-This plugin adds 6 read-only Xquik tools to Paperclip AI agents.
-They cover Twitter search, tweet lookup, profiles, timelines & regional trends.
+## Install the Paperclip Twitter plugin
+
+The plugin needs Node.js 24.11 or newer.
+
+```sh
+paperclipai plugin install @xquik/paperclip-plugin-xquik
+```
+
+Pin the current release when you need reproducible installs.
+
+```sh
+paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.2.1
+```
+
+The package is on [npm](https://www.npmjs.com/package/@xquik/paperclip-plugin-xquik).
+
+## Run a Twitter bot & Twitter automation in Paperclip
+
+An agent calls a tool with its input. This call reads the newest posts that match an X search.
+
+```json
+{
+  "tool": "xquik.search_tweets",
+  "input": { "q": "paperclip ai -filter:replies", "queryType": "Latest", "limit": 20 }
+}
+```
+
+Run that agent on a schedule, and it reports each new match.
 
 <!-- trust:start -->
 
@@ -74,20 +103,6 @@ This plugin does not export followers or publish posts. Use the [Xquik API](http
 
 Paperclip resolves the API key at call time & sends the `x-api-key` header.
 
-## Install
-
-The plugin needs Node.js 24.11 or newer.
-
-```sh
-paperclipai plugin install @xquik/paperclip-plugin-xquik
-```
-
-Pin the current release when you need reproducible installs.
-
-```sh
-paperclipai plugin install @xquik/paperclip-plugin-xquik --version 0.2.1
-```
-
 ## Develop locally
 
 ```sh
@@ -130,12 +145,26 @@ It runs pnpm the same way as `bin/check-local`.
 It skips the upload when the version is already on npm.
 Last, it pushes the annotated tag & creates the GitHub release.
 
+## Questions
+
+### Do I need an X developer account?
+
+No. Public reads need only an Xquik API key. Private reads & X account actions
+need a connected X account.
+
+### Is this the official X API?
+
+No. Xquik is an independent third-party service with its own REST API. This plugin
+calls that API, not the official X API.
+
 ## More Xquik tools
 
 - [X (Twitter) scraper API & Twitter MCP server](https://github.com/Xquik-dev/x-twitter-scraper) with REST, MCP & Skill setup.
 - Twitter API SDKs for [TypeScript](https://github.com/Xquik-dev/x-twitter-scraper-typescript), [Python](https://github.com/Xquik-dev/x-twitter-scraper-python), [Go](https://github.com/Xquik-dev/x-twitter-scraper-go), [Ruby](https://github.com/Xquik-dev/x-twitter-scraper-ruby), [Java](https://github.com/Xquik-dev/x-twitter-scraper-java), [Kotlin](https://github.com/Xquik-dev/x-twitter-scraper-kotlin), [C#](https://github.com/Xquik-dev/x-twitter-scraper-csharp) & [PHP](https://github.com/Xquik-dev/x-twitter-scraper-php).
-- [Twitter CLI & X CLI](https://github.com/Xquik-dev/x-twitter-scraper-cli) for terminal workflows.
-- [Twitter advanced search operators](https://github.com/Xquik-dev/x-twitter-advanced-search) with tested examples.
+- [Twitter CLI & X CLI](https://github.com/Xquik-dev/x-twitter-scraper-cli) and [Twitter advanced search operators](https://github.com/Xquik-dev/x-twitter-advanced-search) with tested examples.
+- Twitter agent plugins for [OpenClaw](https://github.com/Xquik-dev/tweetclaw) & [Hermes Agent](https://github.com/Xquik-dev/hermes-tweet), and the [Twitter API documentation source](https://github.com/Xquik-dev/xquik-docs).
+- Twitter integrations for [n8n](https://github.com/Xquik-dev/n8n-nodes-xquik), [Prefect](https://github.com/Xquik-dev/prefect-xquik), [Haystack](https://github.com/Xquik-dev/xquik-haystack), [Paperclip](https://github.com/Xquik-dev/paperclip-plugin-xquik), [Terraform](https://github.com/Xquik-dev/terraform-provider-x-twitter-scraper), [Convex](https://github.com/Xquik-dev/xquik-convex), [Supabase](https://github.com/Xquik-dev/xquik-supabase) & [Strapi](https://github.com/Xquik-dev/strapi-plugin-xquik).
+- Twitter MCP for [AI agents](https://github.com/Xquik-dev/xquik-mcp), [VS Code](https://github.com/Xquik-dev/xquik-vscode) & [Raycast](https://github.com/Xquik-dev/xquik-raycast).
 - [Xquik X API & Twitter scraper](https://xquik.com) and the [Twitter API documentation](https://docs.xquik.com/api-reference/overview).
 
 ## API contract

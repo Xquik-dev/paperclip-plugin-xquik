@@ -9,6 +9,7 @@ path = [
   ".gitignore",
   "LICENSE",
   "*.md",
+  "CITATION.cff",
   "package.json",
   "pnpm-lock.yaml",
   "tsconfig.json",
