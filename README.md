@@ -1,6 +1,6 @@
-# Paperclip AI Plugin for Twitter Search & X Data
+# Paperclip AI Plugin for Tweet Search & X Data
 
-Use this Paperclip Twitter plugin by Xquik to search tweets from AI agents.
+Use this Paperclip tweet search plugin by Xquik in your AI agents.
 Its 6 read-only tools also read profiles, timelines & regional trends.
 
 Xquik is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
