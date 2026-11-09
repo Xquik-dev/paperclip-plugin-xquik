@@ -1,5 +1,9 @@
 # Paperclip AI Plugin for Tweet Search & X (Twitter) Data
 
+[![Framer builds a tweet ticker with Xquik](https://img.youtube.com/vi/4UOSpoOoC3Y/maxresdefault.jpg)](https://youtu.be/4UOSpoOoC3Y?t=367)\
+[Watch Framer build a tweet ticker with Xquik, from 6:07](https://youtu.be/4UOSpoOoC3Y?t=367).
+This Paperclip plugin calls the Xquik API.
+
 Use this Paperclip tweet search plugin by Xquik in your AI agents.
 Its 6 read-only tools also read profiles, timelines & regional trends.
 
